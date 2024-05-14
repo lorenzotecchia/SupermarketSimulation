@@ -3,7 +3,7 @@
 
 typedef struct Cliente{
     int oggetti;
-    int tempo;
+    int tempo; //in secondi
 } Cliente;
 
 
