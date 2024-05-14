@@ -56,7 +56,7 @@ dkms.conf
 .obsidian
 
 # DS_Store
-*/.DS_Store
+.DS_Store
 
 #VSCode
 .vscode
