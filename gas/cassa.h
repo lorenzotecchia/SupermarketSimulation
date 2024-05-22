@@ -1,16 +1,16 @@
 #ifndef CASSA_H
 #define CASSA_H
 
+#include "cassiere.h"
+#include "queue.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "queue.h"
-#include "cassiere.h"
 
-typedef struct Cassa {
-    Queue *codaClienti;
-    Cassiere *cassiere;
-    int tempoAttesa;
+typedef struct _cassa {
+  Queue *codaClienti;
+  Cassiere *cassiere;
+  int tempoAttesa;
 } Cassa;
 
 Cassa *creaCassa(Cassiere *cassiere);
