@@ -11,7 +11,7 @@
 #define PORT 8080
 
 void *createClients(void *arg) {
-  while (1) {
+  for (int i = 0; i <= 10; i++) {
     // Crea un nuovo cliente con parametri casuali
     int oggetti = rand() % 10 + 1; // da 1 a 10 oggetti
     int tempo = rand() % 5 + 1;    // da 1 a 5 secondi di tempo
@@ -52,7 +52,7 @@ void *createClients(void *arg) {
     free(cliente);
 
     // Aspetta un po' prima di creare un altro cliente
-    usleep(100);
+    usleep(1);
   }
 }
 

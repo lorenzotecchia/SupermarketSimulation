@@ -10,6 +10,8 @@
 #define PORT 8080
 #define BACKLOG 10
 
+int client_number_in_supermarket = 0;
+
 typedef struct _server {
   Cassa *casse[NUM_CASSE];
   pthread_t threads[NUM_CASSE];
@@ -117,8 +119,9 @@ void accettaClient(Server *server) {
 
 void liberaServer(Server *server) {
   for (int i = 0; i < NUM_CASSE; i++) {
-    pthread_cancel(server->threads[i]);
     liberaCassa(server->casse[i]);
+    printf("Simone");
+    pthread_cancel(server->threads[i]);
   }
   close(server->server_fd);
   free(server);
