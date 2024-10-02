@@ -105,6 +105,7 @@ void accettaClient(Server *server) {
     int *client_socket = malloc(sizeof(int));
     *client_socket = accept(server->server_fd, (struct sockaddr *)&address,
                             (socklen_t *)&addrlen);
+    printf("simone");
     if (*client_socket < 0) {
       perror("accept");
       free(client_socket);
@@ -132,4 +133,4 @@ int main() {
   accettaClient(server);
   liberaServer(server);
   return 0;
-}
+};
