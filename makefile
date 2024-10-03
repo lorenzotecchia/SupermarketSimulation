@@ -1,21 +1,21 @@
 client: client.o
-	cc client.o -o client # Runs third
+	gcc client.o -o client # Runs third
 
 client.o:
-	cc -c client.c -o client.o # Runs second
+	gcc -c client.c -o client.o # Runs second
 
 run_client: client
-	./client
+	./client 127.0.0.1 10000
 
 
 server: server.o
-	cc server.o -o server # Runs third
+	gcc server.o -o server # Runs third
 
 server.o: 
-	cc -c server.c -o server.o # Runs second
+	gcc -c -pthreads server.c -o server.o # Runs second
 
 run_server: server
-	./server
+	./server 10000
 
 clean:
 	rm -f client client.o server.o server
