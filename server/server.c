@@ -136,10 +136,9 @@ void *pthread_routine(void *arg) {
 
   printf("Received message from client: %s\n", buffer);
 
-  strcat(buffer, "mammt");
   /* Echo the message back to the client */
 
-  if (write(new_socket_fd, buffer, strlen(buffer)) == -1) {
+  if (write(new_socket_fd, "mammt", strlen("mammt")) == -1) {
     perror("write");
   }
 
