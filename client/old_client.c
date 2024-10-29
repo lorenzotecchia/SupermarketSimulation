@@ -16,13 +16,15 @@ int main(int argc, char *argv[]) {
   struct sockaddr_in server_address;
   char buffer[BUFFER_SIZE] = {0};
 
-  /* Get server name and port from command line arguments or stdin. */
+  /* Get server name from command line arguments or stdin. */
   if (argc > 1) {
     strncpy(server_name, argv[1], SERVER_NAME_LEN_MAX);
   } else {
     printf("Enter Server Name: ");
     scanf("%s", server_name);
   }
+
+  /* Get server port from command line arguments or stdin. */
   server_port = argc > 2 ? atoi(argv[2]) : 0;
   if (!server_port) {
     printf("Enter Port: ");
@@ -31,82 +33,48 @@ int main(int argc, char *argv[]) {
 
   /* Get server host from server name. */
   server_host = gethostbyname(server_name);
-  if (!server_host) {
-    fprintf(stderr, "Could not resolve host\n");
-    exit(1);
-  }
 
-  /* Initialise server address */
+  /* Initialise IPv4 server address with server host. */
   memset(&server_address, 0, sizeof server_address);
   server_address.sin_family = AF_INET;
   server_address.sin_port = htons(server_port);
   memcpy(&server_address.sin_addr.s_addr, server_host->h_addr,
          server_host->h_length);
 
-  /* Create TCP socket */
+  /* Create TCP socket. */
   if ((socket_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
     perror("socket");
     exit(1);
   }
 
-  /* Connect to server */
+  /* Connect to socket with server address. */
   if (connect(socket_fd, (struct sockaddr *)&server_address,
               sizeof server_address) == -1) {
     perror("connect");
-    close(socket_fd);
     exit(1);
   }
 
-  /* Send interval to the server */
-  int min, max;
-  printf("Enter minimum number: ");
-  scanf("%d", &min);
-  printf("Enter maximum number: ");
-  scanf("%d", &max);
+  /* Send a message to the server */
+  printf("Enter message to send to the server: ");
+  fgets(buffer, BUFFER_SIZE, stdin);
 
-  sprintf(buffer, "%d %d", min, max);
   if (write(socket_fd, buffer, strlen(buffer)) == -1) {
     perror("write");
     close(socket_fd);
     exit(1);
   }
 
-  /* Receive and print the response from the server */
+  /* Clear the buffer and receive a response from the server */
   memset(buffer, 0, BUFFER_SIZE);
   if (read(socket_fd, buffer, BUFFER_SIZE) == -1) {
     perror("read");
     close(socket_fd);
     exit(1);
   }
-  printf("Server: %s\n", buffer);
 
-  /* Start guessing the number */
-  int guess;
-  while (1) {
-    printf("Enter your guess: ");
-    scanf("%d", &guess);
+  printf("Server response: %s\n", buffer);
 
-    sprintf(buffer, "%d", guess);
-    if (write(socket_fd, buffer, strlen(buffer)) == -1) {
-      perror("write");
-      close(socket_fd);
-      exit(1);
-    }
-
-    /* Receive response from the server */
-    memset(buffer, 0, BUFFER_SIZE);
-    if (read(socket_fd, buffer, BUFFER_SIZE) == -1) {
-      perror("read");
-      close(socket_fd);
-      exit(1);
-    }
-    printf("Server: %s\n", buffer);
-
-    if (strcmp(buffer, "Correct!") == 0) {
-      break;
-    }
-  }
-
+  /* Close the socket */
   close(socket_fd);
   return 0;
 }
