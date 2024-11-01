@@ -4,6 +4,6 @@ typedef struct {
   int numero_di_oggetti;
 } Cliente;
 
-int compra_ogetti(Cliente cliente);
+int compra_oggetti(Cliente cliente);
 
 void *metti_in_fila(Cliente cliente);
