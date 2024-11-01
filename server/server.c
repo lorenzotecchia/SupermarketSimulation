@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
 
   /* Bind to socket */
   if (bind(socket_fd, (struct sockaddr *)&server_address,
-            sizeof server_address) == -1) {
+           sizeof server_address) == -1) {
     perror("bind");
     exit(1);
   }

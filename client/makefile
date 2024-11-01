@@ -14,7 +14,7 @@ connection.o:
 	 gcc -c utility/connection.c -o utility/connection.o
 
 run_client: client
-	 ./client 127.0.0.1 10000
+	 ./client 127.0.0.1 10000 1
 
 clean:
 	 rm -f client client.o utility/send.o utility/receive.o utility/connection.o
