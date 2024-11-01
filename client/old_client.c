@@ -38,8 +38,7 @@ int main(int argc, char *argv[]) {
   memset(&server_address, 0, sizeof server_address);
   server_address.sin_family = AF_INET;
   server_address.sin_port = htons(server_port);
-  memcpy(&server_address.sin_addr.s_addr, server_host->h_addr,
-         server_host->h_length);
+  memcpy(&server_address.sin_addr.s_addr, server_host->h_addr, server_host->h_length);
 
   /* Create TCP socket. */
   if ((socket_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
@@ -48,8 +47,7 @@ int main(int argc, char *argv[]) {
   }
 
   /* Connect to socket with server address. */
-  if (connect(socket_fd, (struct sockaddr *)&server_address,
-              sizeof server_address) == -1) {
+  if (connect(socket_fd, (struct sockaddr *)&server_address, sizeof server_address) == -1) {
     perror("connect");
     exit(1);
   }
