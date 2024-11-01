@@ -1,10 +1,12 @@
-#include <netdb.h>
 #include <stdio.h>
+#include <netdb.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include "send.h"
+#include "receive.h"
 
 #define SERVER_NAME_LEN_MAX 255
 #define BUFFER_SIZE 1024
@@ -14,8 +16,6 @@ void get_server_info(int argc, char *argv[], char *server_name, int *server_port
 int connect_to_server(const char *server_name, int server_port);
 void guessing_routine(int socket_fd);
 void close_resources(int socket_fd);
-
-
 
 int main(int argc, char *argv[]) {
   char server_name[SERVER_NAME_LEN_MAX + 1] = {0};
@@ -33,26 +33,10 @@ int main(int argc, char *argv[]) {
       socket_fd = connect_to_server(server_name, server_port);
 
       /* Send interval to the server */
-      int min, max;
-      printf("Enter minimum number: ");
-      scanf("%d", &min);
-      printf("Enter maximum number: ");
-      scanf("%d", &max);
-
-      sprintf(buffer, "%d %d", min, max);
-      if (write(socket_fd, buffer, strlen(buffer)) == -1) {
-          perror("write");
-          close_resources(socket_fd);
-          exit(1);
-      }
+      send_interval_to_server(socket_fd);
 
       /* Receive and print the response from the server */
-      //  memset(buffer, 0, BUFFER_SIZE);
-      //  if (read(socket_fd, buffer, BUFFER_SIZE) == -1) {
-      //    perror("read");
-      //    close(socket_fd);
-      //    exit(1);
-      //  }
+      receive_message_from_server(socket_fd, buffer);
       printf("Server: %s\n", buffer);
 
       /* Start guessing the number */
@@ -149,12 +133,7 @@ void guessing_routine(int socket_fd) {
     }
 
     /* Receive response from the server */
-    memset(buffer, 0, BUFFER_SIZE);
-    if (read(socket_fd, buffer, BUFFER_SIZE) == -1) {
-      perror("read");
-      close(socket_fd);
-      exit(1);
-    }
+    receive_message_from_server(socket_fd, buffer);
     printf("Server: %s\n", buffer);
 
     if (strcmp(buffer, "Correct!") == 0) {
