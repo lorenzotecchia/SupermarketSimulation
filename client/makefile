@@ -1,20 +1,20 @@
 client: client.o send.o receive.o connection.o
-    gcc client.o send.o receive.o connection.o -o client
+	 gcc client.o utility/send.o utility/receive.o utility/connection.o -o client
 
-client.o: client.c connection.h
-    gcc -c client.c -o client.o
+client.o:
+	 gcc -c client.c -o client.o
 
-send.o: send.c connection.h
-    gcc -c send.c -o send.o
+send.o:
+	 gcc -c utility/send.c -o utility/send.o
 
-receive.o: receive.c connection.h
-    gcc -c receive.c -o receive.o
+receive.o:
+	 gcc -c utility/receive.c -o utility/receive.o
 
-connection.o: connection.c connection.h
-    gcc -c connection.c -o connection.o
+connection.o:
+	 gcc -c utility/connection.c -o utility/connection.o
 
 run_client: client
-    ./client 127.0.0.1 10000
+	 ./client 127.0.0.1 10000
 
 clean:
-    rm -f client client.o send.o receive.o connection.o
+	 rm -f client client.o utility/send.o utility/receive.o utility/connection.o

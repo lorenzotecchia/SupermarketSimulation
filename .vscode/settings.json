@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.txt": "alex",
+        "receive.h": "c",
+        "connection.h": "c"
+    }
+}

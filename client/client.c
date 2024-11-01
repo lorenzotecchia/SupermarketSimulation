@@ -5,9 +5,9 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include "send.h"
-#include "receive.h"
-#include "connection.h"
+#include "../include/send.h"
+#include "../include/receive.h"
+#include "../include/connection.h"
 
 #define SERVER_NAME_LEN_MAX 255
 #define BUFFER_SIZE 1024
