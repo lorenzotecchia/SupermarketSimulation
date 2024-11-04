@@ -7,15 +7,16 @@ int main(int argc, char *argv[]) {
   int server_port, socket_fd, num_clients;
 
   print_welcome_message();
-  get_server_info(argc, argv, server_name, &server_port, &num_clients);
+  //TODO: impl pulsante di avvio.
+  get_server_info(argc, argv, server_name, &server_port, &num_clients); 
 
   for (int i = 0; i < num_clients; i++) {
     if (fork() == 0) {
       socket_fd = connect_to_server(server_name, server_port);
-
+      //stampa connessione riuscita
       int time_to_shop, num_items;
       generate_client_params(&time_to_shop, &num_items);
-
+      
       if (request_entry_to_supermarket(socket_fd, time_to_shop, num_items) == 0) {
         shop_for_items(time_to_shop);
 
