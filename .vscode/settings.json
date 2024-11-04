@@ -2,6 +2,10 @@
     "files.associations": {
         "*.txt": "alex",
         "receive.h": "c",
-        "connection.h": "c"
+        "connection.h": "c",
+        "stdio.h": "c",
+        "pthread.h": "c",
+        "cliente.h": "c",
+        "cassa.h": "c"
     }
 }
