@@ -1,7 +1,7 @@
 #include "cassa.h"
 #include "cliente.h"
 #include <pthread.h>
-
+#define BUFFER_SIZE 1024
 #define MAX_CASHIERS 20
 
 typedef struct {
