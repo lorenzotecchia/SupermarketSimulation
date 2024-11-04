@@ -21,3 +21,4 @@ run_client: client
 
 clean:
 	 rm -f client client.o uutility/gui.o tility/send.o utility/receive.o utility/connection.o
+	 
