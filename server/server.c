@@ -172,3 +172,13 @@ void signal_handler(int signal_number) {
   /* Exit cleanup can be implemented here if needed */
   exit(0);
 }
+
+/*
+
+1. prende in input i dati quali : porta, ip, casse --> inizializza le strutture dati
+
+2. funzione di creazione socket, bind e ascolto.
+
+3. funzione di gestione dei clienti, accetta la connessione e crea un thread per ogni client
+
+*/

@@ -4,7 +4,7 @@
 
 typedef struct {
   int id;
-  int tempo_fisso;
+  int tempo_fisso; // tempo del cassiere
   int tempo_totale; // tempo attuale di servizio totale
   pthread_mutex_t mutex_cassa;
   pthread_cond_t coda_vuota;

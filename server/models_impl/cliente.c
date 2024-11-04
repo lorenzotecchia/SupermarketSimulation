@@ -13,7 +13,7 @@ int scegli_oggetti(Cliente *cliente) {
     sleep(cliente->tempo_per_scegliere_oggetti);
     
     // Restituisce il numero di oggetti acquistati
-    printf("Cliente %d ha acquistato %d oggetti.\n", cliente->id, cliente->numero_di_oggetti);
+    printf("Cliente %d ha scelto %d oggetti.\n", cliente->id, cliente->numero_di_oggetti);
     return cliente->numero_di_oggetti;
 }
 

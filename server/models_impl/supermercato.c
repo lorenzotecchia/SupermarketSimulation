@@ -119,7 +119,7 @@ int ammetti_clienti(Supermercato *supermercato) {
         supermercato->clienti_presenti++;
         clienti_ammessi++;
 
-        // Sposta il cliente dalla lista di attesa
+        // Sposta il cliente dalla lista di attesa 
         scegli_cassa_per_cliente(supermercato, cliente);
 
         // Rimuove il cliente dalla lista di attesa
