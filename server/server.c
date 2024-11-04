@@ -164,3 +164,10 @@ void *client_handler(void *arg) {
     }
     return NULL;
 }
+
+void signal_handler(int signal_number) {
+    if (signal_number == SIGINT) {
+        printf("Segnale SIGINT ricevuto. Terminazione del server.\n");
+        exit(0);
+    }
+}
