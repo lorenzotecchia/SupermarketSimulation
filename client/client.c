@@ -1,57 +1,37 @@
-#include "../include/connection.h"
-#include "../include/receive.h"
-#include "../include/send.h"
-#include <netdb.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <unistd.h>
-
+#include "client.h"
 #define SERVER_NAME_LEN_MAX 255
 #define BUFFER_SIZE 1024
-
-void print_welcome_message();
-void get_server_info(int argc, char *argv[], char *server_name,
-                     int *server_port, int *num_clients);
-int connect_to_server(const char *server_name, int server_port);
-void guessing_routine(int socket_fd);
-void close_resources(int socket_fd);
 
 int main(int argc, char *argv[]) {
   char server_name[SERVER_NAME_LEN_MAX + 1] = {0};
   int server_port, socket_fd, num_clients;
-  char buffer[BUFFER_SIZE] = {0};
 
   print_welcome_message();
-
-  /* Get server name, port, and number of clients from command line arguments or
-   * stdin. */
   get_server_info(argc, argv, server_name, &server_port, &num_clients);
 
   for (int i = 0; i < num_clients; i++) {
     if (fork() == 0) {
-      /* Connect to server */
       socket_fd = connect_to_server(server_name, server_port);
 
-      /* Send interval to the server */
-      send_interval_to_server(socket_fd);
+      int time_to_shop, num_items;
+      generate_client_params(&time_to_shop, &num_items);
 
-      /* Receive and print the response from the server */
-      receive_message_from_server(socket_fd, buffer);
-      printf("Server: %s\n", buffer);
+      if (request_entry_to_supermarket(socket_fd, time_to_shop, num_items) == 0) {
+        shop_for_items(time_to_shop);
 
-      /* Start guessing the number */
-      guessing_routine(socket_fd);
+        if (num_items > 0) {
+          request_queue_to_checkout(socket_fd);
+          wait_in_queue_and_pay(socket_fd, num_items);
+        } else {
+          handle_no_items_exit(socket_fd); // opzionale
+        }
+      }
 
-      /* Close resources */
       close(socket_fd);
       exit(0);
     }
   }
 
-  /* Wait for all child processes to finish */
   for (int i = 0; i < num_clients; i++) {
     wait(NULL);
   }
@@ -59,35 +39,52 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 
-void print_welcome_message() {
-  printf("\033[1;34m"); // Set text color to blue
-  printf("********************************************\n");
-  printf("*           Welcome to the Client!         *\n");
-  printf("********************************************\n");
-  printf("\033[0m"); // Reset text color
+void generate_client_params(int *time_to_shop, int *num_items) {
+  *time_to_shop = rand() % 10 + 1;   // Tempo per fare acquisti (es. tra 1 e 10 secondi)
+  *num_items = rand() % 20;          // Numero casuale di oggetti
 }
 
-void guessing_routine(int socket_fd) {
+int request_entry_to_supermarket(int socket_fd, int time_to_shop, int num_items) {
   char buffer[BUFFER_SIZE];
-  int guess;
+  snprintf(buffer, BUFFER_SIZE, "ENTRY_REQUEST %d %d", time_to_shop, num_items);
+  write(socket_fd, buffer, strlen(buffer));
 
-  while (1) {
-    printf("Enter your guess: ");
-    scanf("%d", &guess);
-
-    sprintf(buffer, "%d", guess);
-    if (write(socket_fd, buffer, strlen(buffer)) == -1) {
-      perror("write");
-      close(socket_fd);
-      exit(1);
-    }
-
-    /* Receive response from the server */
-    receive_message_from_server(socket_fd, buffer);
-    printf("Server: %s\n", buffer);
-
-    if (strcmp(buffer, "Correct!") == 0) {
-      break;
-    }
+  // Ricezione della risposta dal server
+  receive_message_from_server(socket_fd, buffer);
+  if (strcmp(buffer, "ENTRY_ACCEPTED") == 0) {
+    return 0;
+  } else {
+    printf("Entry denied: %s\n", buffer);
+    return -1;
   }
+}
+
+void shop_for_items(int time_to_shop) {
+  sleep(time_to_shop);  // Simula il tempo speso a fare acquisti
+}
+
+int request_queue_to_checkout(int socket_fd) {
+  char buffer[BUFFER_SIZE];
+  snprintf(buffer, BUFFER_SIZE, "QUEUE_REQUEST");
+  write(socket_fd, buffer, strlen(buffer));
+
+  receive_message_from_server(socket_fd, buffer);
+  printf("Assigned to queue: %s\n", buffer);
+  return 0;
+}
+
+void wait_in_queue_and_pay(int socket_fd, int num_items) {
+  char buffer[BUFFER_SIZE];
+  snprintf(buffer, BUFFER_SIZE, "PAYMENT_REQUEST %d", num_items);
+  write(socket_fd, buffer, strlen(buffer));
+
+  receive_message_from_server(socket_fd, buffer);
+  printf("Payment complete: %s\n", buffer);
+}
+
+void handle_no_items_exit(int socket_fd) {
+  char buffer[BUFFER_SIZE];
+  snprintf(buffer, BUFFER_SIZE, "NO_ITEMS_EXIT_REQUEST");
+  write(socket_fd, buffer, strlen(buffer));
+  receive_message_from_server(socket_fd, buffer);
 }
