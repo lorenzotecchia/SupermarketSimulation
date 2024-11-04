@@ -6,7 +6,7 @@ void print_welcome_message() {
   printf("|                                                       |\n");
   printf("|          🌟 Benvenuto al Simulatore Supermercato 🌟   |\n");
   printf("|                                                       |\n");
-  printf("|   🛒   Dove la programmazione incontra lo shopping   🛒   |\n");
+  printf("| 🛒 Dove la programmazione incontra lo shopping 🛒     |\n");
   printf("|                                                       |\n");
   printf("|    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    |\n");
   printf("|       🥦 🍞 🍎 🧀 🍪 🥛   I reparti sono aperti!      |\n");
@@ -42,7 +42,7 @@ void print_waiting_in_queue_message(int client_id) {
   printf("\033[0m");  // Reset colore
 }
 
-void print_closing_message() {
+void print_closing_message()   {
   printf("\033[1;31m");  // Colore rosso
   printf("+-------------------------------------------------------+\n");
   printf("|                                                       |\n");

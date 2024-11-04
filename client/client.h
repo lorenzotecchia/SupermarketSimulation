@@ -1,7 +1,3 @@
-#include "../include/connection.h"
-#include "../include/receive.h"
-#include "../include/send.h"
-#include "../include/gui.h"
 #include <netdb.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,6 +5,11 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+
+#include "../include/connection.h"
+#include "../include/receive.h"
+#include "../include/send.h"
+#include "../include/gui.h"
 
 void print_welcome_message();
 void get_server_info(int argc, char *argv[], char *server_name, int *server_port, int *num_clients);
