@@ -11,3 +11,5 @@ typedef struct {
   Cliente *coda[MAX_CLIENTS]; // FIFO dei clienti in attesa
   int num_clienti_in_coda;
 } Cassa;
+
+void* servi_cliente(void *arg);
