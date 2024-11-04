@@ -1,10 +1,9 @@
-#include "cliente.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "cliente.h"
-#include "cassa.h"
 #include <pthread.h>
+
+#include "../../include/models.h"
 
 // Simula il tempo che un cliente impiega a fare acquisti
 int scegli_oggetti(Cliente *cliente) {
@@ -30,7 +29,7 @@ void metti_in_fila(Cassa *cassa, Cliente *cliente) {
     }
 
     // Aggiunge il cliente alla coda FIFO
-    cassa->coda[cassa->num_clienti_in_coda] = cliente;
+    cassa->coda[cassa->num_clienti_in_coda] = *cliente;
     cassa->num_clienti_in_coda++;
 
     printf("Cliente %d si è messo in fila alla cassa %d. Clienti in coda: %d\n",

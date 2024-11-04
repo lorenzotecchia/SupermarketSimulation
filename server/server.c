@@ -5,180 +5,162 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
-#include <time.h>
 #include <unistd.h>
+#include <signal.h>
+#include "../include/models.h"
 
-#define BUFFER_SIZE 1024
+
+// Include il tuo header per le funzioni del supermercato
 
 typedef struct pthread_arg_t {
-  int new_socket_fd;
-  struct sockaddr_in client_address;
+    Supermercato *supermercato; // Riferimento al supermercato
+    int new_socket_fd; // File descriptor del socket
+    struct sockaddr_in client_address; // Indirizzo del client
 } pthread_arg_t;
 
-void *pthread_routine(void *arg);
+void setup_server_socket(int server_port, int *socket_fd);
+void accept_connections(int socket_fd, Supermercato *supermercato);
 void signal_handler(int signal_number);
+void *client_handler(void *arg);
 
 int main(int argc, char *argv[]) {
-  int socket_fd, new_socket_fd;
-  struct sockaddr_in server_address, client_address;
-  socklen_t client_address_len;
-  int server_port;
-  pthread_t pthread;
-  pthread_attr_t pthread_attr;
-  pthread_arg_t *pthread_arg;
+    int server_port = 0;
+    int socket_fd;
+    Supermercato supermercato;
 
-  /* Set signal handler for Ctrl-C to gracefully shutdown the server */
-  signal(SIGINT, signal_handler);
+    // Inizializza il gestore di segnali per una chiusura sicura
+    signal(SIGINT, signal_handler);
 
-  /* Get server port from command line arguments or stdin. */
-  server_port = argc > 1 ? atoi(argv[1]) : 0;
-  if (!server_port) {
-    printf("Enter Port: ");
-    scanf("%d", &server_port);
-  }
-
-  /* Initialise IPv4 server address */
-  memset(&server_address, 0, sizeof server_address);
-  server_address.sin_family = AF_INET;
-  server_address.sin_port = htons(server_port);
-  server_address.sin_addr.s_addr = htonl(INADDR_ANY);
-
-  /* Create TCP socket */
-  if ((socket_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
-    perror("socket");
-    exit(1);
-  }
-
-  /* Bind to socket */
-  if (bind(socket_fd, (struct sockaddr *)&server_address,
-           sizeof server_address) == -1) {
-    perror("bind");
-    exit(1);
-  }
-
-  /* Listen on socket */
-  if (listen(socket_fd, 5) == -1) {
-    perror("listen");
-    exit(1);
-  }
-
-  /* Initialize pthread attribute to create detached threads */
-  if (pthread_attr_init(&pthread_attr) != 0) {
-    perror("pthread_attr_init");
-    exit(1);
-  }
-  if (pthread_attr_setdetachstate(&pthread_attr, PTHREAD_CREATE_DETACHED) !=
-      0) {
-    perror("pthread_attr_setdetachstate");
-    exit(1);
-  }
-
-  while (1) {
-    /* Create pthread argument for each connection to client. */
-    pthread_arg = (pthread_arg_t *)malloc(sizeof *pthread_arg);
-    if (!pthread_arg) {
-      perror("malloc");
-      continue;
+    // Ottieni la porta del server dagli argomenti della riga di comando o dall'input
+    server_port = (argc > 1) ? atoi(argv[1]) : 0;
+    if (server_port <= 0) {
+        printf("Enter Port: ");
+        scanf("%d", &server_port);
     }
 
-    /* Accept connection to client. */
-    client_address_len = sizeof pthread_arg->client_address;
-    new_socket_fd =
-        accept(socket_fd, (struct sockaddr *)&pthread_arg->client_address,
-               &client_address_len);
-    if (new_socket_fd == -1) {
-      perror("accept");
-      free(pthread_arg);
-      continue;
+    // Ottieni il numero di casse
+    int num_casse = (argc > 2) ? atoi(argv[2]) : 0;
+    if (num_casse <= 0 && num_casse > MAX_CASHIERS) {
+        printf("Enter number of checkout counters: ");
+        scanf("%d", &num_casse);
     }
 
-    /* Initialise pthread argument. */
-    pthread_arg->new_socket_fd = new_socket_fd;
+    // Inizializza il supermercato
+    inizializza_supermercato(&supermercato, num_casse, MAX_CLIENTS, 5);
 
-    /* Create thread to serve connection to client. */
-    if (pthread_create(&pthread, &pthread_attr, pthread_routine,
-                       (void *)pthread_arg) != 0) {
-      perror("pthread_create");
-      free(pthread_arg);
-      continue;
+    // Crea e configura il socket del server
+    setup_server_socket(server_port, &socket_fd);
+
+    // Avvia il thread di supervisione del supermercato
+    pthread_t supermarket_thread;
+    if (pthread_create(&supermarket_thread, NULL, supervisiona_supermercato, (void *)&supermercato) != 0) {
+        perror("pthread_create");
+        exit(1);
     }
-  }
 
-  return 0;
+    // Accetta le connessioni in un ciclo
+    accept_connections(socket_fd, &supermercato);
+
+    // Pulizia delle risorse
+    pthread_join(supermarket_thread, NULL);
+    close(socket_fd);
+    return 0;
 }
 
-void *pthread_routine(void *arg) {
-  pthread_arg_t *pthread_arg = (pthread_arg_t *)arg;
-  int new_socket_fd = pthread_arg->new_socket_fd;
-  char buffer[BUFFER_SIZE] = {0};
-  int min, max, guess, target;
+void setup_server_socket(int server_port, int *socket_fd) {
+    struct sockaddr_in server_address;
 
-  free(arg); // Free the allocated argument memory
+    // Inizializza la struttura dell'indirizzo del server
+    memset(&server_address, 0, sizeof(server_address));
+    server_address.sin_family = AF_INET;
+    server_address.sin_port = htons(server_port);
+    server_address.sin_addr.s_addr = htonl(INADDR_ANY);
 
-  /* Receive the interval from the client */
-  if (read(new_socket_fd, buffer, BUFFER_SIZE) == -1) {
-    perror("read");
-    close(new_socket_fd);
-    return NULL;
-  }
+    // Crea il socket TCP
+    if ((*socket_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
+        perror("socket");
+        exit(1);
+    }
 
-  sscanf(buffer, "%d %d", &min, &max);
-  printf("Received interval: %d - %d\n", min, max);
+    // Esegui il bind al socket
+    if (bind(*socket_fd, (struct sockaddr *)&server_address, sizeof(server_address)) == -1) {
+        perror("bind");
+        exit(1);
+    }
 
-  /* Generate a random number within the range */
-  srand(time(NULL));
-  target = rand() % (max - min + 1) + min;
-  printf("Generated number: %d\n", target);
+    // Inizia ad ascoltare sul socket
+    if (listen(*socket_fd, 5) == -1) {
+        perror("listen");
+        exit(1);
+    }
+}
 
-  while (1) {
-    /* Clear the buffer and receive a guess from the client */
-    memset(buffer, 0, BUFFER_SIZE);
+void accept_connections(int socket_fd, Supermercato *supermercato) {
+    pthread_t client_thread;
+    pthread_arg_t *pthread_arg;
+    socklen_t client_address_len;
+    int new_socket_fd;
+
+    while (1) {
+        // Alloca memoria per l'argomento del thread
+        pthread_arg = (pthread_arg_t *)malloc(sizeof(pthread_arg_t));
+        if (!pthread_arg) {
+            perror("malloc");
+            continue;
+        }
+
+        // Accetta la connessione del client
+        client_address_len = sizeof(pthread_arg->client_address);
+        new_socket_fd = accept(socket_fd, (struct sockaddr *)&pthread_arg->client_address, &client_address_len);
+        if (new_socket_fd == -1) {
+            perror("accept");
+            free(pthread_arg);
+            continue;
+        }
+
+        // Inizializza l'argomento del pthread
+        pthread_arg->new_socket_fd = new_socket_fd;
+        pthread_arg->supermercato = supermercato;
+
+        // Crea un thread per gestire la connessione del client
+        if (pthread_create(&client_thread, NULL, client_handler, (void *)pthread_arg) != 0) {
+            perror("pthread_create");
+            free(pthread_arg);
+            continue;
+        }
+    }
+}
+
+void *client_handler(void *arg) {
+    pthread_arg_t *pthread_arg = (pthread_arg_t *)arg;
+    int new_socket_fd = pthread_arg->new_socket_fd;
+    Supermercato *supermercato = pthread_arg->supermercato;
+    free(arg); // Libera la memoria allocata per l'argomento
+
+    char buffer[BUFFER_SIZE] = {0};
+    Cliente *cliente = malloc(sizeof(Cliente)); // Alloca memoria per il Cliente
+
+    // Ricevi l'ID del cliente, numero di oggetti e tempo per scegliere
     if (read(new_socket_fd, buffer, BUFFER_SIZE) == -1) {
-      perror("read");
-      close(new_socket_fd);
-      return NULL;
+        perror("read");
+        close(new_socket_fd);
+        free(cliente);
+        return NULL;
     }
 
-    guess = atoi(buffer);
-    printf("Received guess: %d\n", guess);
+    sscanf(buffer, "%d %d %d", &cliente->id, &cliente->numero_di_oggetti, &cliente->tempo_per_scegliere_oggetti);
+    printf("Client %d has %d items and will take %d seconds per item.\n", cliente->id, cliente->numero_di_oggetti, cliente->tempo_per_scegliere_oggetti);
 
-    /* Compare the guess with the target */
-    if (guess < target) {
-      strcpy(buffer, "Too low");
-    } else if (guess > target) {
-      strcpy(buffer, "Too high");
+    // Aggiungi il cliente alla lista d'attesa del supermercato
+    pthread_mutex_lock(&supermercato->mutex_supermercato);
+    if (supermercato->clienti_fuori < supermercato->max_clienti) {
+        supermercato->lista_attesa[supermercato->clienti_fuori] = cliente;
+        supermercato->clienti_fuori++;
+        printf("Client %d added to the waiting list.\n", cliente->id);
+        pthread_cond_signal(&supermercato->spazio_disponibile);
     } else {
-      strcpy(buffer, "Correct");
-      if (write(new_socket_fd, buffer, strlen(buffer)) == -1) {
-        perror("write");
-      }
-      break;
+        printf("Client %d rejected, max clients reached.\n", cliente->id);
+       
     }
-
-    /* Send response to the client */
-    if (write(new_socket_fd, buffer, strlen(buffer)) == -1) {
-      perror("write");
-      close(new_socket_fd);
-      return NULL;
-    }
-  }
-
-  /* Close the connection */
-  close(new_socket_fd);
-  return NULL;
+    return NULL;
 }
-
-void signal_handler(int signal_number) {
-  /* Exit cleanup can be implemented here if needed */
-  exit(0);
-}
-
-/*
-
-1. prende in input i dati quali : porta, ip, casse --> inizializza le strutture dati
-
-2. funzione di creazione socket, bind e ascolto.
-
-3. funzione di gestione dei clienti, accetta la connessione e crea un thread per ogni client
-
-*/

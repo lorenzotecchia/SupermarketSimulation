@@ -1,7 +1,5 @@
-#include "supermercato.h"
-#include "cassa.h"
-#include "cliente.h"
-#include <pthread.h>
+#include "../../include/models.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

@@ -1,12 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
-#include "cassa.h"
-#include "cliente.h"
+#include "../../include/models.h"
 #include <unistd.h>
 
 // Funzione per simulare il servizio di un cliente alla cassa
-void* servi_cliente(void *arg) {
+void *servi_cliente(void *arg) {
     Cassa *cassa = (Cassa *)arg;
 
     while (1) {
@@ -19,7 +18,7 @@ void* servi_cliente(void *arg) {
         }
 
         // Prende il primo cliente in coda (FIFO)
-        Cliente *cliente = cassa->coda[0];
+        Cliente * cliente = &(cassa->coda[0]);
 
         // Sposta gli altri clienti avanti nella coda
         for (int i = 0; i < cassa->num_clienti_in_coda - 1; i++) {
