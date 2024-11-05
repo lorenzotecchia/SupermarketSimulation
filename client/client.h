@@ -6,7 +6,6 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include <sys/wait.h>
 #include "include_client/connection.h"
 #include "include_client/receive.h"
 #include "include_client/send.h"
