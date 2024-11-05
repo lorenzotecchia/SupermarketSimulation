@@ -1,0 +1,16 @@
+FROM ubuntu:latest
+
+WORKDIR /app
+
+# Installare GCC e Make
+RUN apt-get update && apt-get install -y gcc make
+
+COPY . /app/
+
+# Compilare il server
+RUN make server
+
+# Esporre la porta 10000
+EXPOSE 10000
+
+CMD ["./server", "10000", "127.0.0.1", "5"]

@@ -1,7 +1,16 @@
-FROM gcc:latest
+FROM ubuntu:latest
 
 WORKDIR /app
 
-COPY client/ /app/
+# Installare GCC e Make
+RUN apt-get update && apt-get install -y gcc make
 
+COPY . /app/
+
+# Compilare ed eseguire il client
 RUN make run_client
+
+# Esporre la porta 10000
+EXPOSE 10000
+
+CMD ["./client 10000 1 "]
