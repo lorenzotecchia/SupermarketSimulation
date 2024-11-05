@@ -6,10 +6,10 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "../include/connection.h"
-#include "../include/receive.h"
-#include "../include/send.h"
-#include "../include/gui.h"
+#include "include_client/connection.h"
+#include "include_client/receive.h"
+#include "include_client/send.h"
+#include "include_client/gui.h"
 
 void print_welcome_message();
 void get_server_info(int argc, char *argv[], char *server_name, int *server_port, int *num_clients);

@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <pthread.h>
 
-#include "../../include/models.h"
+#include "../include_server/models.h"
 
 // Simula il tempo che un cliente impiega a fare acquisti
 int scegli_oggetti(Cliente *cliente) {

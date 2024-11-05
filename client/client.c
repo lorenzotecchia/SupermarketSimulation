@@ -6,10 +6,9 @@ int main(int argc, char *argv[]) {
   char server_name[SERVER_NAME_LEN_MAX + 1] = {0};
   int server_port, socket_fd, num_clients;
 
+  get_server_info(argc, argv, server_name, &server_port, &num_clients); 
   print_welcome_message();
   //TODO: impl pulsante di avvio.
-  get_server_info(argc, argv, server_name, &server_port, &num_clients); 
-
   for (int i = 0; i < num_clients; i++) {
     if (fork() == 0) {
       socket_fd = connect_to_server(server_name, server_port);

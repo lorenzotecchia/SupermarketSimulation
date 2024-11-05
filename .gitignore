@@ -19,6 +19,8 @@
 *.obj
 *.elf
 
+!dockerfile
+
 # Linker output
 *.ilk
 *.map

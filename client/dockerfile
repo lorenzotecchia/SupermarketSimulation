@@ -1,19 +1,7 @@
-# Usa un'immagine base con gcc e make installati
 FROM gcc:latest
 
-# Installa le librerie necessarie
-RUN apt-get update && apt-get install -y \
-    make \
-    && rm -rf /var/lib/apt/lists/*
-
-# Crea una directory di lavoro
 WORKDIR /app
 
-# Copia l'intera struttura del progetto nella directory di lavoro
-COPY ../. /app
+COPY client/ /app/
 
-# Compila il progetto
-RUN make
-
-# Comando di default per eseguire il client
-CMD ["./client"]
+RUN make run_client

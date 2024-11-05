@@ -1,4 +1,4 @@
-#include "../../include/gui.h"
+#include "../include_client/gui.h"
 
 void print_welcome_message() {
   printf("\033[1;36m");  // Colore ciano

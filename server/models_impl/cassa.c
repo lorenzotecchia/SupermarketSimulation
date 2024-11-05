@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
-#include "../../include/models.h"
+#include "../include_server/models.h"
 #include <unistd.h>
 
 // Funzione per simulare il servizio di un cliente alla cassa
