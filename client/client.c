@@ -8,14 +8,14 @@ int main(int argc, char *argv[]) {
 
   get_server_info(argc, argv, server_name, &server_port, &num_clients); 
   print_welcome_message();
-  //TODO: impl pulsante di avvio.
+
   for (int i = 0; i < num_clients; i++) {
     if (fork() == 0) {
       socket_fd = connect_to_server(server_name, server_port);
-      //stampa connessione riuscita
+
       int time_to_shop, num_items;
       generate_client_params(&time_to_shop, &num_items);
-      
+
       if (request_entry_to_supermarket(socket_fd, time_to_shop, num_items) == 0) {
         shop_for_items(time_to_shop);
 
@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
           request_queue_to_checkout(socket_fd);
           wait_in_queue_and_pay(socket_fd, num_items);
         } else {
-          handle_no_items_exit(socket_fd); // opzionale
+          handle_no_items_exit(socket_fd);
         }
       }
 
@@ -40,8 +40,8 @@ int main(int argc, char *argv[]) {
 }
 
 void generate_client_params(int *time_to_shop, int *num_items) {
-  *time_to_shop = rand() % 10 + 1;   // Tempo per fare acquisti (es. tra 1 e 10 secondi)
-  *num_items = rand() % 20;          // Numero casuale di oggetti
+  *time_to_shop = rand() % 10 + 1;
+  *num_items = rand() % 20;
 }
 
 int request_entry_to_supermarket(int socket_fd, int time_to_shop, int num_items) {
@@ -49,7 +49,6 @@ int request_entry_to_supermarket(int socket_fd, int time_to_shop, int num_items)
   snprintf(buffer, BUFFER_SIZE, "ENTRY_REQUEST %d %d", time_to_shop, num_items);
   write(socket_fd, buffer, strlen(buffer));
 
-  // Ricezione della risposta dal server
   receive_message_from_server(socket_fd, buffer);
   if (strcmp(buffer, "ENTRY_ACCEPTED") == 0) {
     return 0;
@@ -60,7 +59,7 @@ int request_entry_to_supermarket(int socket_fd, int time_to_shop, int num_items)
 }
 
 void shop_for_items(int time_to_shop) {
-  sleep(time_to_shop);  // Simula il tempo speso a fare acquisti
+  sleep(time_to_shop);
 }
 
 int request_queue_to_checkout(int socket_fd) {

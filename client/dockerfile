@@ -1,9 +1,11 @@
-FROM ubuntu:latest
+FROM alpine:latest
 
 WORKDIR /app
 
 # Installare GCC e Make
-RUN apt-get update && apt-get install -y gcc make
+
+RUN apk update && \
+	apk add --no-cache gcc make libc-dev linux-headers netcat-openbsd
 
 COPY . /app/
 

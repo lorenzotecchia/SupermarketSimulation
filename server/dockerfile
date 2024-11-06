@@ -1,12 +1,9 @@
-FROM ubuntu:latest
+FROM alpine:latest
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y \
-    gcc \
-    make \
-    netcat-openbsd \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apk update && \
+	apk add --no-cache gcc make libc-dev linux-headers netcat-openbsd
 
 COPY . /app/
 
