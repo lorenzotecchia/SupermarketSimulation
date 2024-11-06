@@ -13,4 +13,4 @@ RUN make run_client
 # Esporre la porta 10000
 EXPOSE 10000
 
-CMD ["./client", "10000", "1"]
+CMD ["./client", "server", "10000", "1"]
