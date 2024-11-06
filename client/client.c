@@ -44,24 +44,40 @@ int main(int argc, char *argv[]) {
 }
 
 void generate_client_params(int *time_to_shop, int *num_items) {
-  *time_to_shop = rand() % 10 + 1;
-  *num_items = rand() % 20;
+    *time_to_shop = (rand() % 10) + 1; // Valori tra 1 e 10 secondi
+    *num_items = rand() % 20;          // Numero di oggetti tra 0 e 19
+    
+    // Controllo per confermare che i valori siano nel range corretto
+    if (*time_to_shop < 1 || *time_to_shop > 10) {
+        *time_to_shop = 5;  // Default in caso di errore
+    }
+    if (*num_items < 0 || *num_items > 19) {
+        *num_items = 1;  // Default in caso di errore
+    }
 }
 
 int request_entry_to_supermarket(int socket_fd, int time_to_shop, int num_items) {
-  char buffer[BUFFER_SIZE];
-  snprintf(buffer, BUFFER_SIZE, "ENTRY_REQUEST %d %d", time_to_shop, num_items);
-  write(socket_fd, buffer, strlen(buffer));
+    char buffer[BUFFER_SIZE];
+    snprintf(buffer, BUFFER_SIZE, "ENTRY_REQUEST %d %d", time_to_shop, num_items);
+    
+    // Scrive e controlla che tutti i byte siano inviati
+    int bytes_written = write(socket_fd, buffer, strlen(buffer));
+    if (bytes_written != strlen(buffer)) {
+        perror("Errore nella scrittura sul socket");
+        return -1;
+    }
 
-  receive_message_from_server(socket_fd, buffer);
-  if (strcmp(buffer, "ENTRY_ACCEPTED") == 0) {
-    printf("Richiesta di entrare accettata\n");
-    return 0;
-  } else {
-    printf("Entry denied: %s\n", buffer);
-    return -1;
-  }
+    // Riceve la risposta del server
+    receive_message_from_server(socket_fd, buffer);
+    if (strcmp(buffer, "ENTRY_ACCEPTED") == 0) {
+        printf("Richiesta di entrare accettata\n");
+        return 0;
+    } else {
+        printf("Entry denied: %s\n", buffer);
+        return -1;
+    }
 }
+
 
 void shop_for_items(int time_to_shop) {
   printf("Il cliente impiegherà [%d] secondi per fare acquisti\n", time_to_shop);
