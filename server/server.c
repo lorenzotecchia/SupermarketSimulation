@@ -57,6 +57,7 @@ int main(int argc, char *argv[]) {
         perror("pthread_create");
         exit(1);
     }
+    printf("Thread del supermercato creato correttamente\n");
 
     // Accetta le connessioni in un ciclo
     accept_connections(socket_fd, &supermercato);
