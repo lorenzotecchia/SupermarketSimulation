@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
         scanf("%d", &num_casse);
     }
 
-    inizializza_supermercato(&supermercato, num_casse, MAX_CLIENTS, 5);
+    inizializza_supermercato(&supermercato, num_casse, MAX_CLIENTS, 0);
     setup_server_socket(server_port, &socket_fd);
 
     pthread_t supermarket_thread;
@@ -119,31 +119,62 @@ void *client_handler(void *arg) {
     free(arg);
 
     char buffer[BUFFER_SIZE] = {0};
+    memset(buffer, 0, BUFFER_SIZE);
 
+    // Continua a leggere finché ci sono dati dal client
     while (read(new_socket_fd, buffer, BUFFER_SIZE) > 0) {
+        // Verifica se il messaggio ricevuto è una richiesta di ingresso
         if (strncmp(buffer, "ENTRY_REQUEST", 13) == 0) {
-            int time_to_shop, num_items;
-            sscanf(buffer + 14, "%d %d", &time_to_shop, &num_items);
+            int time_to_shop = 0, num_items = 0;
+
+            // Stampa di debug per verificare il contenuto del buffer ricevuto dal client
+            printf("DEBUG: Buffer ricevuto dal client: %s\n", buffer);
+
+            // Parsing dei parametri dal buffer
+            if (sscanf(buffer + 14, "%d %d", &time_to_shop, &num_items) != 2) {
+                printf("Errore nel parsing dei dati dal buffer: %s\n", buffer);
+                close(new_socket_fd);  // Chiude la connessione in caso di errore
+                return NULL;
+            }
+
+            // Debug per i valori parsati
+            printf("DEBUG: time_to_shop = %d, num_items = %d\n", time_to_shop, num_items);
 
             pthread_mutex_lock(&supermercato->mutex_supermercato);
             if (supermercato->clienti_fuori < supermercato->max_clienti) {
                 write(new_socket_fd, "ENTRY_ACCEPTED", strlen("ENTRY_ACCEPTED"));
+                printf("Richiesta di ingresso accettata per il cliente.\n");
             } else {
                 write(new_socket_fd, "ENTRY_DENIED", strlen("ENTRY_DENIED"));
+                printf("Richiesta di ingresso negata per il cliente.\n");
             }
             pthread_mutex_unlock(&supermercato->mutex_supermercato);
-        } else if (strcmp(buffer, "QUEUE_REQUEST") == 0) {
+        } 
+        
+        // Gestione della richiesta di coda per la cassa
+        else if (strcmp(buffer, "QUEUE_REQUEST") == 0) {
             write(new_socket_fd, "ASSIGNED_TO_QUEUE", strlen("ASSIGNED_TO_QUEUE"));
-        } else if (strncmp(buffer, "PAYMENT_REQUEST", 15) == 0) {
+            printf("Cliente assegnato alla coda.\n");
+        } 
+        
+        // Gestione della richiesta di pagamento
+        else if (strncmp(buffer, "PAYMENT_REQUEST", 15) == 0) {
             write(new_socket_fd, "PAYMENT_COMPLETE", strlen("PAYMENT_COMPLETE"));
-        } else if (strcmp(buffer, "NO_ITEMS_EXIT_REQUEST") == 0) {
+            printf("Pagamento completato per il cliente.\n");
+        } 
+        
+        // Gestione dell'uscita senza oggetti
+        else if (strcmp(buffer, "NO_ITEMS_EXIT_REQUEST") == 0) {
             write(new_socket_fd, "EXIT_CONFIRMED", strlen("EXIT_CONFIRMED"));
+            printf("Uscita confermata per il cliente senza oggetti.\n");
         }
     }
 
     close(new_socket_fd);
     return NULL;
 }
+
+
 
 void signal_handler(int signal_number) {
     if (signal_number == SIGINT) {
