@@ -4,7 +4,7 @@
 
 int main(int argc, char *argv[]) {
   char server_name[SERVER_NAME_LEN_MAX + 1] = {0};
-  int server_port, socket_fd, num_clients;
+  int server_port, socket_fd, num_clients = 1;
 
   get_server_info(argc, argv, server_name, &server_port, &num_clients); 
   print_welcome_message();
@@ -12,10 +12,20 @@ int main(int argc, char *argv[]) {
   for (int i = 0; i < num_clients; i++) {
     if (fork() == 0) {
       socket_fd = connect_to_server(server_name, server_port);
+<<<<<<< HEAD
 
       int time_to_shop, num_items;
       generate_client_params(&time_to_shop, &num_items);
 
+=======
+      printf("Client connesso correttamente\n");
+      int time_to_shop, num_items;
+      generate_client_params(&time_to_shop, &num_items);
+      printf("Cliente generato\n");
+      printf("Tempo per gli acquisti [%d]\n", time_to_shop);
+      printf("Numero di oggetti [%d]\n", num_items);
+      
+>>>>>>> refs/remotes/origin/right
       if (request_entry_to_supermarket(socket_fd, time_to_shop, num_items) == 0) {
         shop_for_items(time_to_shop);
 
@@ -51,6 +61,7 @@ int request_entry_to_supermarket(int socket_fd, int time_to_shop, int num_items)
 
   receive_message_from_server(socket_fd, buffer);
   if (strcmp(buffer, "ENTRY_ACCEPTED") == 0) {
+    printf("Richiesta di entrare accettata\n");
     return 0;
   } else {
     printf("Entry denied: %s\n", buffer);
@@ -59,7 +70,12 @@ int request_entry_to_supermarket(int socket_fd, int time_to_shop, int num_items)
 }
 
 void shop_for_items(int time_to_shop) {
+<<<<<<< HEAD
   sleep(time_to_shop);
+=======
+  printf("Il cliente impiegherà [%d] secondi per fare acquisti\n", time_to_shop);
+  sleep(time_to_shop);  // Simula il tempo speso a fare acquisti
+>>>>>>> refs/remotes/origin/right
 }
 
 int request_queue_to_checkout(int socket_fd) {
