@@ -5,19 +5,18 @@
 #include <unistd.h>
 
 //__________________________________________________________________________________________________//
-void inizializza_supermercato(Supermercato *supermercato, int num_casse, int max_clienti, int E) {
+void inizializza_supermercato(Supermercato *supermercato, int num_casse, int max_clienti) {
     supermercato->num_casse = num_casse;
     supermercato->max_clienti = max_clienti;
     supermercato->clienti_presenti = 0;
     supermercato->clienti_fuori = 0;
-    supermercato->E = E;
     pthread_mutex_init(&supermercato->mutex_supermercato, NULL);
     pthread_cond_init(&supermercato->spazio_disponibile, NULL);
 
     for (int i = 0; i < num_casse; i++) {
         supermercato->casse[i] = (Cassa *)malloc(sizeof(Cassa));
         supermercato->casse[i]->id = i;
-        supermercato->casse[i]->tempo_fisso = 1;  // Imposta valori appropriati per ogni cassa
+        supermercato->casse[i]->tempo_fisso = rand () % 5 + 1;
         supermercato->casse[i]->tempo_totale = 0;
         supermercato->casse[i]->num_clienti_in_coda = 0;
         pthread_mutex_init(&supermercato->casse[i]->mutex_cassa, NULL);
@@ -25,6 +24,7 @@ void inizializza_supermercato(Supermercato *supermercato, int num_casse, int max
     }
 }
 //__________________________________________________________________________________________________//
+
 
 // Funzione che sceglie la cassa con il minor numero di clienti e mette in fila il cliente
 void scegli_cassa_per_cliente(Supermercato *supermercato, Cliente *cliente) {
@@ -85,7 +85,9 @@ void* supervisiona_supermercato(void *arg) {
         // Controlla se possiamo ammettere nuovi clienti
         if (possiamo_ammettere_clienti(supermercato)) {
             int clienti_ammessi = ammetti_clienti(supermercato);
+            if(clienti_ammessi){
             printf("Ammessi %d nuovi clienti. Clienti attualmente presenti: %d.\n", clienti_ammessi, supermercato->clienti_presenti);
+            }
         } else {
             printf("Non ci sono clienti da ammettere o limite massimo raggiunto.\n");
         }
@@ -101,12 +103,12 @@ void* supervisiona_supermercato(void *arg) {
 
 // Controlla se possiamo ammettere nuovi clienti
 int possiamo_ammettere_clienti(Supermercato *supermercato) {
-    return supermercato->clienti_presenti <= supermercato->max_clienti - supermercato->E;
+    return supermercato->clienti_presenti <= supermercato->max_clienti;
 }
 
 // Ammette i clienti dalla lista di attesa
 int ammetti_clienti(Supermercato *supermercato) {
-    int clienti_da_ammettere = supermercato->E;
+    int clienti_da_ammettere = supermercato->max_clienti - supermercato->clienti_presenti;
     int clienti_ammessi = 0;
 
     // Controlla quanti clienti ci sono effettivamente in lista di attesa

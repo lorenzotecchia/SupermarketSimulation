@@ -8,8 +8,6 @@ services:
     container_name: server
     ports:
       - "10000:10000"  # Mappa la porta 10000 del container sulla porta 10000 dell'host
-    networks:
-      - app-network
     stdin_open: true  # Mantieni l'input aperto per l'interazione
     tty: true         # Mantieni il terminale attivo
     command: ["./server", "10000", "0.0.0.0", "5"]  # Ascolta su tutte le interfacce, non solo su localhost
@@ -21,12 +19,6 @@ services:
     container_name: client
     depends_on:
       - server
-    networks:
-      - app-network
     stdin_open: true  # Mantieni l'input aperto per l'interazione
     tty: true         # Mantieni il terminale attivo
     command: ["./client", "server", "10000", "1"]  # Usa il nome del servizio del server come host
-
-networks:
-  app-network:
-    driver: bridge

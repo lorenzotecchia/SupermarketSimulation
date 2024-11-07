@@ -11,6 +11,11 @@ typedef struct {
 } Cliente;
 
 typedef struct {
+    void *cassa;
+    void *supermercato;
+} ParametriCassa;
+
+typedef struct {
   int id;
   int tempo_fisso;
   int tempo_totale;
@@ -25,7 +30,6 @@ typedef struct {
   int max_clienti;
   int clienti_presenti;
   int clienti_fuori;
-  int E;
   Cliente *lista_attesa[MAX_CLIENTS]; // FIFO dei clienti fuori dal supermercato
   Cassa *casse[MAX_CASHIERS];
   pthread_mutex_t mutex_supermercato;
@@ -40,7 +44,7 @@ void metti_in_fila(Cassa * cassa, Cliente *cliente);
 void *servi_cliente(void *arg);
 
 // Funzioni per il supermercato
-void inizializza_supermercato(Supermercato *supermercato, int num_casse, int max_clienti, int E);
+void inizializza_supermercato(Supermercato *supermercato, int num_casse, int max_clienti);
 void scegli_cassa_per_cliente(Supermercato *supermercato, Cliente *cliente);
 int trova_cassa_minima(Supermercato *supermercato);
 void* supervisiona_supermercato(void *arg);
