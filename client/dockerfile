@@ -10,7 +10,7 @@ RUN apk update && \
 COPY . /app/
 
 # Compilare ed eseguire il client
-RUN make run_client
+RUN make clean && make run_client
 
 # Esporre la porta 10000
 EXPOSE 10000

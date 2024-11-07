@@ -6,10 +6,12 @@
 
 // Funzione per simulare il servizio di un cliente alla cassa
 void *servi_cliente(void *arg) {
-    Cassa *cassa = (Cassa *)arg;
+    ParametriCassa *parametri = (ParametriCassa *)arg;
+    Cassa *cassa = (Cassa *)parametri->cassa;
+    Supermercato *supermercato = (Supermercato *)parametri->supermercato;
 
     while (1) {
-        // Blocca il mutex della cassa
+
         pthread_mutex_lock(&cassa->mutex_cassa);
 
         // Aspetta che ci siano clienti in coda
@@ -30,11 +32,11 @@ void *servi_cliente(void *arg) {
         pthread_mutex_unlock(&cassa->mutex_cassa);
 
         // Calcola il tempo di servizio per il cliente
-        int tempo_servizio = cassa->tempo_fisso + cliente->numero_di_oggetti * 1; // esempio: 1 secondo per oggetto
-        printf("Cassa %d sta servendo il cliente %d per %d secondi.\n", cassa->id, cliente->id, tempo_servizio);
+        int tempo_servizio = cassa->tempo_fisso + cliente->numero_di_oggetti * rand() % 5 + 1;
+        printf("Cassa %d sta servendo il cliente %d per %d secondi [...] \n", cassa->id, cliente->id, tempo_servizio);
 
         // Simula il servizio del cliente
-        sleep(tempo_servizio);
+        sleep(1);
 
         // Aggiorna il tempo totale di servizio della cassa
         pthread_mutex_lock(&cassa->mutex_cassa);
@@ -43,8 +45,12 @@ void *servi_cliente(void *arg) {
 
         printf("Cassa %d ha terminato di servire il cliente %d.\n", cassa->id, cliente->id);
 
-        // Simula l'uscita del cliente (qui si potrebbe fare il free se i clienti sono allocati dinamicamente)
-    }
+        //elimina il cliente dalla cassa
+        pthread_mutex_lock(&supermercato->mutex_supermercato);
+        supermercato->clienti_presenti--;
+        printf("Cliente %d servito e uscito dal supermercato\n", cliente->id);
+        pthread_mutex_unlock(&supermercato->mutex_supermercato);
 
+    }
     return NULL;
 }

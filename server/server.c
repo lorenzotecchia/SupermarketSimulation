@@ -9,6 +9,10 @@
 #include <signal.h>
 #include "include_server/models.h"
 
+#define BUFFER_SIZE 1024
+#define MAX_CLIENTS 100
+#define MAX_CASHIERS 20
+
 typedef struct pthread_arg_t {
     Supermercato *supermercato;
     int new_socket_fd;
@@ -39,16 +43,34 @@ int main(int argc, char *argv[]) {
         scanf("%d", &num_casse);
     }
 
-    inizializza_supermercato(&supermercato, num_casse, MAX_CLIENTS, 0);
-    setup_server_socket(server_port, &socket_fd);
+    // Inizializza il supermercato con le casse e i parametri
+    inizializza_supermercato(&supermercato, num_casse, MAX_CLIENTS); // es. valore di E = 5
 
+    // Crea un thread per supervisionare il supermercato
     pthread_t supermarket_thread;
     if (pthread_create(&supermarket_thread, NULL, supervisiona_supermercato, (void *)&supermercato) != 0) {
         perror("pthread_create");
         exit(1);
     }
-    printf("Thread del supermercato creato correttamente\n");
 
+    // Crea un thread per ogni cassa per servire i clienti
+    for (int i = 0; i < supermercato.num_casse; i++) {
+        pthread_t cassa_thread;
+        ParametriCassa *parametri = malloc(sizeof(ParametriCassa));
+        if (parametri == NULL) {
+            perror("malloc");
+            exit(1);
+        }
+        parametri->cassa = (void *)supermercato.casse[i];
+        parametri->supermercato = (void *)&supermercato;
+
+        if (pthread_create(&cassa_thread, NULL, servi_cliente, (void *)parametri) != 0) {
+            perror("pthread_create");
+            exit(1);
+        }
+    }
+
+    setup_server_socket(server_port, &socket_fd);
     accept_connections(socket_fd, &supermercato);
 
     pthread_join(supermarket_thread, NULL);
@@ -56,6 +78,7 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
+// Configura il server socket per ascoltare le connessioni in entrata
 void setup_server_socket(int server_port, int *socket_fd) {
     struct sockaddr_in server_address;
 
@@ -80,6 +103,7 @@ void setup_server_socket(int server_port, int *socket_fd) {
     }
 }
 
+// Accetta connessioni e crea un thread per ogni cliente
 void accept_connections(int socket_fd, Supermercato *supermercato) {
     pthread_t client_thread;
     pthread_arg_t *pthread_arg;
@@ -92,7 +116,7 @@ void accept_connections(int socket_fd, Supermercato *supermercato) {
             perror("malloc");
             continue;
         }
-
+    
         client_address_len = sizeof(pthread_arg->client_address);
         new_socket_fd = accept(socket_fd, (struct sockaddr *)&pthread_arg->client_address, &client_address_len);
         if (new_socket_fd == -1) {
@@ -112,6 +136,7 @@ void accept_connections(int socket_fd, Supermercato *supermercato) {
     }
 }
 
+// Gestione della connessione con il client
 void *client_handler(void *arg) {
     pthread_arg_t *pthread_arg = (pthread_arg_t *)arg;
     int new_socket_fd = pthread_arg->new_socket_fd;
@@ -119,63 +144,51 @@ void *client_handler(void *arg) {
     free(arg);
 
     char buffer[BUFFER_SIZE] = {0};
-    memset(buffer, 0, BUFFER_SIZE);
 
-    // Continua a leggere finché ci sono dati dal client
     while (read(new_socket_fd, buffer, BUFFER_SIZE) > 0) {
-        // Verifica se il messaggio ricevuto è una richiesta di ingresso
-        if (strncmp(buffer, "ENTRY_REQUEST", 13) == 0) {
-            int time_to_shop = 0, num_items = 0;
+        char command[20] = {0};
+        sscanf(buffer, "%s", command);
 
-            // Stampa di debug per verificare il contenuto del buffer ricevuto dal client
-            // printf("DEBUG: Buffer ricevuto dal client: %s\n", buffer);
+        switch (command[0]) {
+            case 'E': // ENTRY_REQUEST --> richiesta di entrata al supermercato, viene aggiunto nella lista di attesa fuori il supermercato.
+                if (strncmp(buffer, "ENTRY_REQUEST", 13) == 0) {
+                    int time_to_shop = 0, num_items = 0;
+                    if (sscanf(buffer + 14, "%d %d", &time_to_shop, &num_items) != 2) {
+                        close(new_socket_fd);
+                        return NULL;
+                    }
 
-            // Parsing dei parametri dal buffer
-            if (sscanf(buffer + 14, "%d %d", &time_to_shop, &num_items) != 2) {
-                printf("Errore nel parsing dei dati dal buffer: %s\n", buffer);
-                close(new_socket_fd);  // Chiude la connessione in caso di errore
-                return NULL;
-            }
+                    Cliente cliente;
+                    cliente.id = new_socket_fd; // utilizzo dell'ID socket per rappresentare univocamente il cliente
+                    cliente.tempo_per_scegliere_oggetti = time_to_shop;
+                    cliente.numero_di_oggetti = num_items;
 
-            // Debug per i valori parsati
-            // printf("DEBUG: time_to_shop = %d, num_items = %d\n", time_to_shop, num_items);
+                    pthread_mutex_lock(&supermercato->mutex_supermercato);
+                    if (supermercato->clienti_fuori < supermercato->max_clienti) {
+                        write(new_socket_fd, "ENTRY_ACCEPTED", strlen("ENTRY_ACCEPTED"));
+                        supermercato->lista_attesa[supermercato->clienti_fuori++] = &cliente;
+                        printf("cliente aggiunto nella lista di attesa fuori il supermercato\n");
+                    } else {
+                        write(new_socket_fd, "ENTRY_DENIED", strlen("ENTRY_DENIED"));
+                    }
+                    pthread_mutex_unlock(&supermercato->mutex_supermercato);
+                }
+                break;
 
-            pthread_mutex_lock(&supermercato->mutex_supermercato);
-            if (supermercato->clienti_fuori < supermercato->max_clienti) {
-                write(new_socket_fd, "ENTRY_ACCEPTED", strlen("ENTRY_ACCEPTED"));
-                printf("Richiesta di ingresso accettata per il cliente.\n");
-            } else {
-                write(new_socket_fd, "ENTRY_DENIED", strlen("ENTRY_DENIED"));
-                printf("Richiesta di ingresso negata per il cliente.\n");
-            }
-            pthread_mutex_unlock(&supermercato->mutex_supermercato);
-        } 
-        
-        // Gestione della richiesta di coda per la cassa
-        else if (strcmp(buffer, "QUEUE_REQUEST") == 0) {
-            write(new_socket_fd, "ASSIGNED_TO_QUEUE", strlen("ASSIGNED_TO_QUEUE"));
-            printf("Cliente assegnato alla coda.\n");
-        } 
-        
-        // Gestione della richiesta di pagamento
-        else if (strncmp(buffer, "PAYMENT_REQUEST", 15) == 0) {
-            write(new_socket_fd, "PAYMENT_COMPLETE", strlen("PAYMENT_COMPLETE"));
-            printf("Pagamento completato per il cliente.\n");
-        } 
-        
-        // Gestione dell'uscita senza oggetti
-        else if (strcmp(buffer, "NO_ITEMS_EXIT_REQUEST") == 0) {
-            write(new_socket_fd, "EXIT_CONFIRMED", strlen("EXIT_CONFIRMED"));
-            printf("Uscita confermata per il cliente senza oggetti.\n");
+            // Altri casi di gestione delle richieste
+            default:
+                printf("Comando non riconosciuto: %s\n", buffer);
+                break;
         }
+
+        memset(buffer, 0, BUFFER_SIZE);
     }
 
     close(new_socket_fd);
     return NULL;
 }
 
-
-
+// Gestore del segnale SIGINT
 void signal_handler(int signal_number) {
     if (signal_number == SIGINT) {
         printf("SIGINT received. Shutting down server.\n");
