@@ -1,5 +1,5 @@
 #include <pthread.h>
-
+#include <stdatomic.h>
 #define BUFFER_SIZE 1024
 #define MAX_CLIENTS 100
 #define MAX_CASHIERS 20
@@ -22,7 +22,7 @@ typedef struct {
   pthread_mutex_t mutex_cassa;
   pthread_cond_t coda_vuota;
   Cliente coda[MAX_CLIENTS];
-  int num_clienti_in_coda;
+  atomic_int num_clienti_in_coda;
 } Cassa;
 
 typedef struct {

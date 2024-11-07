@@ -37,14 +37,14 @@ int main(int argc, char *argv[]) {
         scanf("%d", &server_port);
     }
 
-    int num_casse = (argc > 2) ? atoi(argv[2]) : 0;
+    int num_casse = (argc > 2) ? atoi(argv[3]) : 0;
     if (num_casse <= 0 && num_casse > MAX_CASHIERS) {
         printf("Enter number of checkout counters: ");
         scanf("%d", &num_casse);
     }
 
     // Inizializza il supermercato con le casse e i parametri
-    inizializza_supermercato(&supermercato, num_casse, MAX_CLIENTS); // es. valore di E = 5
+    inizializza_supermercato(&supermercato, num_casse, MAX_CLIENTS);
 
     // Crea un thread per supervisionare il supermercato
     pthread_t supermarket_thread;
@@ -167,7 +167,7 @@ void *client_handler(void *arg) {
                     if (supermercato->clienti_fuori < supermercato->max_clienti) {
                         write(new_socket_fd, "ENTRY_ACCEPTED", strlen("ENTRY_ACCEPTED"));
                         supermercato->lista_attesa[supermercato->clienti_fuori++] = &cliente;
-                        printf("cliente aggiunto nella lista di attesa fuori il supermercato\n");
+                        printf("cliente con id : %d in lista attesa.\n", cliente.id);
                     } else {
                         write(new_socket_fd, "ENTRY_DENIED", strlen("ENTRY_DENIED"));
                     }
@@ -177,10 +177,9 @@ void *client_handler(void *arg) {
 
             // Altri casi di gestione delle richieste
             default:
-                printf("Comando non riconosciuto: %s\n", buffer);
+                //printf("Comando non riconosciuto: %s\n", buffer);
                 break;
         }
-
         memset(buffer, 0, BUFFER_SIZE);
     }
 

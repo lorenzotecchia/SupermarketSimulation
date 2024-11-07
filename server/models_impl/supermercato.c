@@ -15,6 +15,10 @@ void inizializza_supermercato(Supermercato *supermercato, int num_casse, int max
 
     for (int i = 0; i < num_casse; i++) {
         supermercato->casse[i] = (Cassa *)malloc(sizeof(Cassa));
+        if(supermercato->casse[i] == NULL) {
+            perror("malloc");
+            exit(1);
+        }
         supermercato->casse[i]->id = i;
         supermercato->casse[i]->tempo_fisso = rand () % 5 + 1;
         supermercato->casse[i]->tempo_totale = 0;
@@ -47,39 +51,43 @@ void scegli_cassa_per_cliente(Supermercato *supermercato, Cliente *cliente) {
 int trova_cassa_minima(Supermercato *supermercato) {
     int cassa_min_clienti = -1;
     int num_min_clienti = MAX_CLIENTS + 1;
+    int num_clienti_in_coda[supermercato->num_casse];
 
-    // Blocca il mutex del supermercato per garantire accesso esclusivo
-    pthread_mutex_lock(&supermercato->mutex_supermercato);
-    printf("numero casse : %d", supermercato->num_casse);
-    // Cerca la cassa con meno clienti in coda
+    // Copia temporanea dei dati per evitare di bloccare mutex in ogni iterazione
     for (int i = 0; i < supermercato->num_casse; i++) {
-        Cassa *cassa = supermercato->casse[i];
-        printf("indice del ciclo  prima della scelta: %d\n", i);
-        // Blocca il mutex della cassa corrente
-        pthread_mutex_lock(&cassa->mutex_cassa);
-
-        // Controlla se questa cassa ha meno clienti in coda
-        if (cassa->num_clienti_in_coda < num_min_clienti) {
-            num_min_clienti = cassa->num_clienti_in_coda;
-            cassa_min_clienti = i;
-            printf("cassa minima scelta: %d\n", i);
-        }
-
-        printf("indice del ciclo dopo la scelta: %d\n", i);
-
-        // Sblocca il mutex della cassa corrente
-        pthread_mutex_unlock(&cassa->mutex_cassa);
+        pthread_mutex_lock(&supermercato->casse[i]->mutex_cassa);
+        num_clienti_in_coda[i] = supermercato->casse[i]->num_clienti_in_coda;
+        pthread_mutex_unlock(&supermercato->casse[i]->mutex_cassa);
     }
 
-    pthread_mutex_unlock(&supermercato->mutex_supermercato);
-    return cassa_min_clienti;  // Restituisce l'indice della cassa con meno clienti
+    // Trova la cassa con meno clienti utilizzando i dati copiati
+    for (int i = 0; i < supermercato->num_casse; i++) {
+        printf("Controllo cassa %d con %d clienti in coda\n", i, num_clienti_in_coda[i]);
+        
+        if (num_clienti_in_coda[i] < num_min_clienti) {
+            num_min_clienti = num_clienti_in_coda[i];
+            cassa_min_clienti = i;
+            printf("Nuova cassa minima scelta: %d con %d clienti\n", i, num_clienti_in_coda[i]);
+        }
+    }
+
+    return cassa_min_clienti;
 }
+
 
 //__________________________________________________________________________________________________//
 
 // Funzione per supervisionare il supermercato e ammettere nuovi clienti
 void* supervisiona_supermercato(void *arg) {
+    sleep(10);  // Attende 10 secondi prima di iniziare
+
     Supermercato *supermercato = (Supermercato *)arg;
+    //stampa la lista di attesa con gli id dei clienti
+    printf("Lista attesa finale: ");
+    for (int i = 0; i < supermercato->clienti_fuori; i++) {
+        printf("%d ", supermercato->lista_attesa[i]->id);
+    }
+    printf("\n");
 
     while (1) {
         // Blocca il mutex per leggere e modificare i dati del supermercato
@@ -93,6 +101,7 @@ void* supervisiona_supermercato(void *arg) {
             }
         } else {
             printf("Non ci sono clienti da ammettere o limite massimo raggiunto.\n");
+            break;
         }
 
         // Sblocca il mutex del supermercato
@@ -106,6 +115,7 @@ void* supervisiona_supermercato(void *arg) {
 
 // Controlla se possiamo ammettere nuovi clienti
 int possiamo_ammettere_clienti(Supermercato *supermercato) {
+    printf("il ritorno della funzione \"possiamo ammettere clienti" " è : %d\n", supermercato->clienti_presenti <= supermercato->max_clienti);
     return supermercato->clienti_presenti <= supermercato->max_clienti;
 }
 
@@ -114,9 +124,13 @@ int ammetti_clienti(Supermercato *supermercato) {
     int clienti_da_ammettere = supermercato->max_clienti - supermercato->clienti_presenti;
     int clienti_ammessi = 0;
 
-    // Controlla quanti clienti ci sono effettivamente in lista di attesa
-    for (int i = 0; i < clienti_da_ammettere && supermercato->lista_attesa[i] != NULL; i++) {
+    // Controlla quanti clienti ci sono effettivamente in lista di attesa e ammette i clienti fino al limite
+    for (int i = 0; i < clienti_da_ammettere && i < MAX_CLIENTS && supermercato->lista_attesa[i] != NULL; i++) {
         Cliente *cliente = supermercato->lista_attesa[i];
+        
+        if (cliente == NULL) {
+            continue; // Salta se il cliente è già stato rimosso
+        }
 
         // Aggiungi il cliente al supermercato
         supermercato->clienti_presenti++;
@@ -127,17 +141,29 @@ int ammetti_clienti(Supermercato *supermercato) {
 
         // Rimuove il cliente dalla lista di attesa
         supermercato->lista_attesa[i] = NULL;
+        printf("Rimuovo il cliente %d dalla lista di attesa.\n", cliente->id);
     }
 
     // Sposta avanti i clienti rimasti in attesa per mantenere l'ordine FIFO
-    sposta_clienti_avanti(supermercato, clienti_da_ammettere);
+    printf("Sposto avanti i clienti rimasti in attesa.\n");
+    sposta_clienti_avanti(supermercato, clienti_ammessi);
+    printf("Il numero di clienti ammessi è : %d\n", clienti_ammessi);
     return clienti_ammessi;
 }
 
 // Sposta avanti i clienti rimanenti nella lista di attesa
 void sposta_clienti_avanti(Supermercato *supermercato, int clienti_da_ammettere) {
-    for (int i = 0; i < MAX_CLIENTS - clienti_da_ammettere; i++) {
-        supermercato->lista_attesa[i] = supermercato->lista_attesa[i + clienti_da_ammettere];
+    int j = 0; // nuovo indice per lista ordinata
+
+    for (int i = 0; i < MAX_CLIENTS; i++) {
+        if (supermercato->lista_attesa[i] != NULL) {
+            supermercato->lista_attesa[j++] = supermercato->lista_attesa[i];
+        }
+    }
+
+    // Imposta i restanti elementi come NULL
+    while (j < MAX_CLIENTS) {
+        supermercato->lista_attesa[j++] = NULL;
     }
 }
 //__________________________________________________________________________________________________//
