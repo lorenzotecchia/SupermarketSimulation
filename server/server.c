@@ -128,7 +128,7 @@ void *client_handler(void *arg) {
             int time_to_shop = 0, num_items = 0;
 
             // Stampa di debug per verificare il contenuto del buffer ricevuto dal client
-            printf("DEBUG: Buffer ricevuto dal client: %s\n", buffer);
+            // printf("DEBUG: Buffer ricevuto dal client: %s\n", buffer);
 
             // Parsing dei parametri dal buffer
             if (sscanf(buffer + 14, "%d %d", &time_to_shop, &num_items) != 2) {
@@ -138,7 +138,7 @@ void *client_handler(void *arg) {
             }
 
             // Debug per i valori parsati
-            printf("DEBUG: time_to_shop = %d, num_items = %d\n", time_to_shop, num_items);
+            // printf("DEBUG: time_to_shop = %d, num_items = %d\n", time_to_shop, num_items);
 
             pthread_mutex_lock(&supermercato->mutex_supermercato);
             if (supermercato->clienti_fuori < supermercato->max_clienti) {

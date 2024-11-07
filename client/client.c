@@ -7,8 +7,8 @@ int main(int argc, char *argv[]) {
   int server_port, socket_fd, num_clients = 1;
 
   get_server_info(argc, argv, server_name, &server_port, &num_clients); 
-  print_welcome_message();
 
+  print_welcome_message();
   for (int i = 0; i < num_clients; i++) {
     if (fork() == 0) {
       socket_fd = connect_to_server(server_name, server_port);
