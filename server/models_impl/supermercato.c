@@ -50,11 +50,11 @@ int trova_cassa_minima(Supermercato *supermercato) {
 
     // Blocca il mutex del supermercato per garantire accesso esclusivo
     pthread_mutex_lock(&supermercato->mutex_supermercato);
-
+    printf("numero casse : %d", supermercato->num_casse);
     // Cerca la cassa con meno clienti in coda
     for (int i = 0; i < supermercato->num_casse; i++) {
         Cassa *cassa = supermercato->casse[i];
-
+        printf("indice del ciclo  prima della scelta: %d\n", i);
         // Blocca il mutex della cassa corrente
         pthread_mutex_lock(&cassa->mutex_cassa);
 
@@ -62,7 +62,10 @@ int trova_cassa_minima(Supermercato *supermercato) {
         if (cassa->num_clienti_in_coda < num_min_clienti) {
             num_min_clienti = cassa->num_clienti_in_coda;
             cassa_min_clienti = i;
+            printf("cassa minima scelta: %d\n", i);
         }
+
+        printf("indice del ciclo dopo la scelta: %d\n", i);
 
         // Sblocca il mutex della cassa corrente
         pthread_mutex_unlock(&cassa->mutex_cassa);

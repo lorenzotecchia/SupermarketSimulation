@@ -17,8 +17,8 @@ gui.o:
 	 gcc -c utility/gui.c -o utility/gui.o
 
 run_client: client
-	./client 127.0.0.1 10000 3
+	./client 127.0.0.1 10000 50
 
 clean:
-	 rm -f client client.o utility/gui.o utility/send.o utility/receive.o utility/connection.o
-	 
+	rm -f client client.o utility/gui.o utility/send.o utility/receive.o utility/connection.o
+
