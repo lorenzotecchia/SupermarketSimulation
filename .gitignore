@@ -10,6 +10,8 @@
 # Unignore all dirs
 !*/
 
+cmake-build-debug
+
 # Prerequisites
 *.d
 
