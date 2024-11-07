@@ -7,9 +7,8 @@
 
 int scegli_oggetti(Cliente *cliente) {
 
-    printf("Cliente %d sta scegliendo gli acquisti per %d secondi. [...] \n", cliente->id, cliente->tempo_per_scegliere_oggetti*cliente->numero_di_oggetti);
-    //sleep(cliente->tempo_per_scegliere_oggetti*cliente->numero_di_oggetti);
-    sleep(1);
+    printf("Cliente %d sta scegliendo gli acquisti per %d secondi. [...] \n", cliente->id, cliente->tempo_per_scegliere_oggetti);
+    sleep(cliente->tempo_per_scegliere_oggetti);
 
     // Restituisce il numero di oggetti acquistati
     printf("Cliente %d ha scelto %d oggetti.\n", cliente->id, cliente->numero_di_oggetti);

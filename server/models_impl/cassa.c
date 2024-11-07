@@ -11,7 +11,7 @@ void *servi_cliente(void *arg) {
     Supermercato *supermercato = (Supermercato *)parametri->supermercato;
 
     while (1) {
-
+        srand(time(NULL));
         pthread_mutex_lock(&cassa->mutex_cassa);
 
         // Aspetta che ci siano clienti in coda
@@ -32,11 +32,11 @@ void *servi_cliente(void *arg) {
         pthread_mutex_unlock(&cassa->mutex_cassa);
 
         // Calcola il tempo di servizio per il cliente
-        int tempo_servizio = cassa->tempo_fisso + cliente->numero_di_oggetti * rand() % 5 + 1;
+        int tempo_servizio = cassa->tempo_fisso + cliente->numero_di_oggetti * rand() % 3 + 1;
         printf("Cassa %d sta servendo il cliente %d per %d secondi [...] \n", cassa->id, cliente->id, tempo_servizio);
 
         // Simula il servizio del cliente
-        sleep(1);
+        sleep(tempo_servizio);
 
         // Aggiorna il tempo totale di servizio della cassa
         pthread_mutex_lock(&cassa->mutex_cassa);

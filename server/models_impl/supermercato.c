@@ -20,7 +20,7 @@ void inizializza_supermercato(Supermercato *supermercato, int num_casse, int max
             exit(1);
         }
         supermercato->casse[i]->id = i;
-        supermercato->casse[i]->tempo_fisso = rand () % 5 + 1;
+        supermercato->casse[i]->tempo_fisso = rand () % 3 + 1;
         supermercato->casse[i]->tempo_totale = 0;
         supermercato->casse[i]->num_clienti_in_coda = 0;
         pthread_mutex_init(&supermercato->casse[i]->mutex_cassa, NULL);
