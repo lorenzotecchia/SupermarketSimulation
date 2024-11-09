@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "../include_server/colors.h"
 
 //__________________________________________________________________________________________________//
 void inizializza_supermercato(Supermercato *supermercato, int num_casse, int max_clienti) {
@@ -42,9 +43,9 @@ void scegli_cassa_per_cliente(Supermercato *supermercato, Cliente *cliente) {
     if (cassa_min_index != -1) {
         Cassa *cassa_scelta = supermercato->casse[cassa_min_index];
         metti_in_fila(cassa_scelta, cliente);  // Usa metti_in_fila per inserire il cliente
-        printf("Cliente %d assegnato alla cassa %d.\n", cliente->id, cassa_scelta->id);
+        printf(COLOR_GREEN "Cliente %d assegnato alla cassa %d.\n" COLOR_RESET, cliente->id, cassa_scelta->id);
     } else {
-        printf("Non ci sono casse disponibili per il cliente %d.\n", cliente->id);
+        printf(COLOR_RED "Non ci sono casse disponibili per il cliente %d.\n" COLOR_RESET, cliente->id);
     }
 }
 
@@ -62,12 +63,16 @@ int trova_cassa_minima(Supermercato *supermercato) {
 
     // Trova la cassa con meno clienti utilizzando i dati copiati
     for (int i = 0; i < supermercato->num_casse; i++) {
-        printf("Controllo cassa %d con %d clienti in coda\n", i, num_clienti_in_coda[i]);
+        printf(COLOR_YELLOW "Controllo cassa %d con %d clienti in coda\n" COLOR_RESET, i, num_clienti_in_coda[i]);
         
         if (num_clienti_in_coda[i] < num_min_clienti) {
             num_min_clienti = num_clienti_in_coda[i];
             cassa_min_clienti = i;
-            printf("Nuova cassa minima scelta: %d con %d clienti\n", i, num_clienti_in_coda[i]);
+            if(num_min_clienti==0){
+                printf(COLOR_MAGENTA "La cassa è vuota, la assegno\n" COLOR_RESET);
+                break;
+            }
+            printf(COLOR_BLUE "Nuova cassa minima scelta: %d con %d clienti\n" COLOR_RESET, i, num_clienti_in_coda[i]);
         }
     }
 
@@ -83,7 +88,7 @@ void* supervisiona_supermercato(void *arg) {
 
     Supermercato *supermercato = (Supermercato *)arg;
     //stampa la lista di attesa con gli id dei clienti
-    printf("Lista attesa finale: ");
+    printf(COLOR_GREEN "Lista attesa finale: " COLOR_RESET);
     for (int i = 0; i < supermercato->clienti_fuori; i++) {
         printf("%d ", supermercato->lista_attesa[i]->id);
     }
@@ -97,10 +102,10 @@ void* supervisiona_supermercato(void *arg) {
         if (possiamo_ammettere_clienti(supermercato)) {
             int clienti_ammessi = ammetti_clienti(supermercato);
             if(clienti_ammessi){
-            printf("Ammessi %d nuovi clienti. Clienti attualmente presenti: %d.\n", clienti_ammessi, supermercato->clienti_presenti);
+            printf(COLOR_BLUE "Ammessi %d nuovi clienti. Clienti attualmente presenti: %d.\n" COLOR_RESET, clienti_ammessi, supermercato->clienti_presenti);
             }
         } else {
-            printf("Non ci sono clienti da ammettere o limite massimo raggiunto.\n");
+            printf(COLOR_RED "Non ci sono clienti da ammettere o limite massimo raggiunto.\n" COLOR_RESET);
             break;
         }
 
