@@ -1,21 +1,23 @@
 #include "../include_client/gui.h"
+#include <stdlib.h>
 
 void print_welcome_message() {
-  printf("\033[1;36m");  // Colore ciano
-  printf("+-------------------------------------------------------+\n");
-  printf("|                                                       |\n");
-  printf("|          🌟 Benvenuto al Simulatore Supermercato 🌟   |\n");
-  printf("|                                                       |\n");
-  printf("| 🛒 Dove la programmazione incontra lo shopping 🛒     |\n");
-  printf("|                                                       |\n");
-  printf("|    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    |\n");
-  printf("|       🥦 🍞 🍎 🧀 🍪 🥛   I reparti sono aperti!      |\n");
-  printf("|    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    |\n");
-  printf("|                                                       |\n");
-  printf("|        Premi un tasto per iniziare la tua avventura!  |\n");
-  printf("|                                                       |\n");
-  printf("+-------------------------------------------------------+\n");
-  printf("\033[0m");  // Reset colore
+    system("clear");
+    printf("\033[1;36m");  // Colore ciano
+    printf("+-------------------------------------------------------+\n");
+    printf("|                                                       |\n");
+    printf("|          🌟 Benvenuto al Simulatore Supermercato 🌟   |\n");
+    printf("|                                                       |\n");
+    printf("| 🛒 Dove la programmazione incontra lo shopping 🛒     |\n");
+    printf("|                                                       |\n");
+    printf("|    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    |\n");
+    printf("|       🥦 🍞 🍎 🧀 🍪 🥛   I reparti sono aperti!      |\n");
+    printf("|    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    |\n");
+    printf("|                                                       |\n");
+    printf("|        Premi un tasto per iniziare la tua avventura!  |\n");
+    printf("|                                                       |\n");
+    printf("+-------------------------------------------------------+\n");
+    printf("\033[0m");  // Reset colore
 }
 
 
