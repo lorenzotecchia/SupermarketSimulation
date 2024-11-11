@@ -6,11 +6,9 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include "connection.h"
-#include "receive.h"
-#include "send.h"
 #include "gui.h"
 
+// Per il client
 void print_welcome_message();
 void get_server_info(int argc, char *argv[], char *server_name, int *server_port, int *num_clients);
 int connect_to_server(const char *server_name, int server_port);
@@ -21,3 +19,10 @@ int request_queue_to_checkout(int socket_fd);
 void wait_in_queue_and_pay(int socket_fd, int num_items);
 void close_resources(int socket_fd);
 void handle_no_items_exit(int socket_fd);
+
+// Per la connessione
+int connect_to_server(const char *server_name, int server_port);
+void get_server_info(int argc, char *argv[], char *server_name, int *server_port, int *num_clients);
+
+// Per la ricezione dei messaggi
+void receive_message_from_server(int socket_fd, char *buffer);

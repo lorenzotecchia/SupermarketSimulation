@@ -7,16 +7,16 @@ server.o:
 	 gcc -c -pthread server.c -o server.o
 
 connection.o:
-	gcc -c -pthread models_impl/connection.c -o connection.o
+	gcc -c -pthread server_models_impl/connection.c -o connection.o
 
 supermercato.o: 
-	 gcc -c -pthread models_impl/supermercato.c -o supermercato.o
+	 gcc -c -pthread server_models_impl/supermercato.c -o supermercato.o
 
 cassa.o: 
-	 gcc -c -pthread models_impl/cassa.c -o cassa.o
+	 gcc -c -pthread server_models_impl/cassa.c -o cassa.o
 
 cliente.o: 
-	 gcc -c -pthread models_impl/cliente.c -o cliente.o
+	 gcc -c -pthread server_models_impl/cliente.c -o cliente.o
 
 # Pulizia dei file oggetto e dell'eseguibile
 clean:

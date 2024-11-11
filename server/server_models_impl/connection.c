@@ -1,4 +1,4 @@
-#include "../include_server/models.h"
+#include "../server_include/server_models.h"
 
 // Configura il server socket per ascoltare le connessioni in entrata
 void setup_server_socket(int server_port, int *socket_fd) {

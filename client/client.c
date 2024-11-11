@@ -1,4 +1,4 @@
-#include "include_client/client.h"
+#include "client_include/client_models.h"
 #define SERVER_NAME_LEN_MAX 255
 #define BUFFER_SIZE 1024
 

@@ -1,9 +1,9 @@
-#include "../include_server/models.h"
+#include "../server_include/server_models.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "../include_server/colors.h"
+#include "../server_include/colors.h"
 
 //__________________________________________________________________________________________________//
 void inizializza_supermercato(Supermercato *supermercato, int num_casse, int max_clienti) {

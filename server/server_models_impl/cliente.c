@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <pthread.h>
-#include "../include_server/models.h"
+#include "../server_include/server_models.h"
 
 
 int scegli_oggetti(Cliente *cliente) {

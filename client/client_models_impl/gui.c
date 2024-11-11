@@ -1,4 +1,4 @@
-#include "../include_client/gui.h"
+#include "../client_include/gui.h"
 #include <stdlib.h>
 
 void print_welcome_message() {
