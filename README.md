@@ -62,8 +62,9 @@ Il progetto è organizzato nella seguente struttura di directory e file:
   - `makefile`: File di build per compilare il modulo client.
 
 - **doc/**: Contiene documentazione aggiuntiva.
-  - `[Istruzioni docker compose](https://github.com/lorenzotecchia/SupermarketSimulation/blob/right/doc/istruzioni_docker_compose.md)`: Istruzioni per configurare e utilizzare Docker Compose per lanciare il progetto.
-  - `[Traccia](https://github.com/lorenzotecchia/SupermarketSimulation/blob/right/doc/tracce_progetti.pdf)`: Documento descrittivo con le specifiche dei progetti.
+  - [Istruzioni docker compose](https://github.com/lorenzotecchia/SupermarketSimulation/blob/right/doc/istruzioni_docker_compose.md): Istruzioni per configurare e utilizzare Docker Compose per lanciare il progetto.
+  - [Traccia](https://github.com/lorenzotecchia/SupermarketSimulation/blob/right/doc/tracce_progetti.pdf): Documento descrittivo con le specifiche dei progetti.
+  - [Documentazione completa](https://github.com/lorenzotecchia/SupermarketSimulation/blob/right/doc/documentazione.pdf): Documentazione completa del progetto
 
 - **docker-compose.yml**: Configurazione per Docker Compose per orchestrare l'esecuzione di client e server.
 
