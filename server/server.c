@@ -143,7 +143,6 @@ void *client_handler(void *arg) {
                     if (supermercato->clienti_fuori < supermercato->max_clienti) {
                         write(new_socket_fd, "ENTRY_ACCEPTED", strlen("ENTRY_ACCEPTED"));
                         supermercato->lista_attesa[supermercato->clienti_fuori++] = &cliente;
-                        printf("cliente con id : %d in lista attesa.\n", cliente.id);
                     } else {
                         write(new_socket_fd, "ENTRY_DENIED", strlen("ENTRY_DENIED"));
                     }

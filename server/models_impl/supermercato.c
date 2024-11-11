@@ -120,7 +120,6 @@ void* supervisiona_supermercato(void *arg) {
 
 // Controlla se possiamo ammettere nuovi clienti
 int possiamo_ammettere_clienti(Supermercato *supermercato) {
-    printf("il ritorno della funzione \"possiamo ammettere clienti" " è : %d\n", supermercato->clienti_presenti <= supermercato->max_clienti);
     return supermercato->clienti_presenti <= supermercato->max_clienti;
 }
 
