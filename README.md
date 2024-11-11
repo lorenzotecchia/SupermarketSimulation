@@ -62,7 +62,7 @@ Il progetto è organizzato nella seguente struttura di directory e file:
   - `makefile`: File di build per compilare il modulo client.
 
 - **doc/**: Contiene documentazione aggiuntiva.
-  - `istruzioni_docker_compose.md`: Istruzioni per configurare e utilizzare Docker Compose per lanciare il progetto.
+  - `[Istruzioni docker compose](/doc/istruzioni_docker_compose.md)`: Istruzioni per configurare e utilizzare Docker Compose per lanciare il progetto.
   - `tracce_progetti.pdf`: Documento descrittivo con le specifiche dei progetti.
 
 - **docker-compose.yml**: Configurazione per Docker Compose per orchestrare l'esecuzione di client e server.
@@ -112,6 +112,3 @@ Il progetto è organizzato nella seguente struttura di directory e file:
      - Il pagamento e l'uscita dal supermercato.
    - Ogni operazione (come la scelta degli acquisti e il pagamento) è accompagnata da un'indicazione del tempo trascorso e del numero di articoli acquistati, simulando una dinamica realistica di acquisti in un supermercato.
 
----
-
-Questa descrizione fornisce una panoramica della logica e della struttura del progetto `SupermarketSimulation`, spiegando come le componenti interagiscono e vengono gestite per simulare il comportamento di un supermercato reale.
