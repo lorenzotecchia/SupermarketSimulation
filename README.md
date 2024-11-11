@@ -7,6 +7,7 @@ Il progetto include una struttura basata su **clienti**, **cassieri** e **code**
 
 Il progetto è organizzato nella seguente struttura di directory e file:
 
+```plaintext
 .
 ├── LICENSE
 ├── README.md
@@ -44,6 +45,7 @@ Il progetto è organizzato nella seguente struttura di directory e file:
 
 8 directories, 26 files
 
+```
 
 ### Descrizione della Struttura
 
