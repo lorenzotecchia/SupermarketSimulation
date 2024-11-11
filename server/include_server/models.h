@@ -1,5 +1,15 @@
 #include <pthread.h>
+#include <netdb.h>
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <signal.h>
 #include <stdatomic.h>
+
 #define BUFFER_SIZE 1024
 #define MAX_CLIENTS 100
 #define MAX_CASHIERS 20
@@ -36,6 +46,12 @@ typedef struct {
   pthread_cond_t spazio_disponibile;
 } Supermercato;
 
+typedef struct pthread_arg_t {
+    Supermercato *supermercato;
+    int new_socket_fd;
+    struct sockaddr_in client_address;
+} pthread_arg_t;
+
 // Funzioni per il cliente
 int scegli_oggetti(Cliente *cliente);
 void metti_in_fila(Cassa * cassa, Cliente *cliente);
@@ -51,3 +67,10 @@ void* supervisiona_supermercato(void *arg);
 int possiamo_ammettere_clienti(Supermercato *supermercato);
 int ammetti_clienti(Supermercato *supermercato);
 void sposta_clienti_avanti(Supermercato *supermercato, int clienti_da_ammettere);
+
+
+// Funzioni di connessione al client
+void setup_server_socket(int server_port, int *socket_fd);
+void accept_connections(int socket_fd, Supermercato *supermercato);
+void signal_handler(int signal_number);
+void *client_handler(void *arg);

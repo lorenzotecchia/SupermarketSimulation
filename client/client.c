@@ -35,7 +35,6 @@ int main(int argc, char *argv[]) {
       exit(0);
     }
   }
-  simulate_galaga(num_clients);
 
   for (int i = 0; i < num_clients; i++) {
     wait(NULL);
@@ -81,7 +80,7 @@ int request_entry_to_supermarket(int socket_fd, int time_to_shop, int num_items)
 
 
 void shop_for_items(int time_to_shop) {
-  //printf("Il cliente impiegherà [%d] secondi per fare acquisti\n", time_to_shop);
+  printf("Il cliente impiegherà [%d] secondi per fare acquisti\n", time_to_shop);
   sleep(time_to_shop);  // Simula il tempo speso a fare acquisti
 }
 
@@ -91,7 +90,7 @@ int request_queue_to_checkout(int socket_fd) {
   write(socket_fd, buffer, strlen(buffer));
 
   receive_message_from_server(socket_fd, buffer);
-  //printf("Assigned to queue: %s\n", buffer);
+  printf("Assigned to queue: %s\n", buffer);
   return 0;
 }
 
@@ -101,7 +100,7 @@ void wait_in_queue_and_pay(int socket_fd, int num_items) {
   write(socket_fd, buffer, strlen(buffer));
 
   receive_message_from_server(socket_fd, buffer);
-  //printf("Payment complete: %s\n", buffer);
+  printf("Payment complete: %s\n", buffer);
 }
 
 void handle_no_items_exit(int socket_fd) {
