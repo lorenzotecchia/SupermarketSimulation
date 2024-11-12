@@ -1,0 +1,129 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+
+\usepackage{enumitem}
+\setitemize{noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textit{Laboratorio di Sistemi Operativi - SupermarketSimulation}}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0.5pt}
+
+\begin{document}
+
+\begin{titlepage}
+
+\begin{center}
+   \includegraphics[scale=0.4]{Images/logo-federico-II.pdf} 
+\end{center}
+   
+\thispagestyle{empty}
+
+\center
+
+\textsc{\large Università degli studi di Napoli Federico II}
+
+\vspace{0.5in}
+
+\noindent\makebox[\linewidth]{\rule{\linewidth}{1.2pt}}
+\textsc{ \textbf{\large Supermarket Simulation }}
+\noindent\makebox[\linewidth]{\rule{\linewidth}{1.2pt}}
+
+\vspace{0.5in}
+
+\begin{minipage}{0.30\textwidth}
+    \begin{flushleft}
+        Francesco Terrecuso \\
+        N86004191
+    \end{flushleft}
+\end{minipage}
+\begin{minipage}{0.30\textwidth}
+    \begin{center}
+        Lorenzo Tecchia \\
+        N86004446
+    \end{center}
+\end{minipage}
+\begin{minipage}{0.35\textwidth}
+    \begin{flushright}
+        Simone Parente Martone \\
+        N86004297
+    \end{flushright}
+\end{minipage}
+
+\vspace{2in}
+
+\textbf{\large Department of Computer Science} \\
+
+\today
+
+\end{titlepage}
+
+\newpage
+
+\section{Introduzione}
+Questo documento presenta un progetto sviluppato per l'esame di Laboratorio di 
+Sistemi Operativi, A.A 2023/2024, tenuto dalla Prof. Rossi Alessandra.  \\
+Il progetto consiste nella simulazione di un supermercato, modellando le 
+interazioni tra quest'ultimo, i clienti e le casse in un contesto multi-threaded. 
+Questo file si divide in diverse sezioni che forniscono una panoramica dei 
+requisiti, delle scelte architetturali e implementative adottate.
+\section{Requisiti identificati}
+Il progetto prevede la realizzazione di un architettura client-server che simuli 
+un supermercato dotato di $K$ casse e avente un limite di $C$ clienti presenti 
+contemporaneamente all'interno. \\
+All'inizio della simulazione, $C$ clienti entrano nel supermercato 
+simultaneamente, successivamente, ogni volta che escono $E$ clienti, possono 
+entrarne altri $E$. \\
+Ogni cliente ha un tempo variabile dedicato agli acquisti, una volta scaduto questo
+tempo, il cliente si mette in fila per pagare, attendendo il proprio turno.
+Ultimato il pagamento, il cliente esce dal supermercato. \\
+Ogni cassa è gestita da un cassiere che serve i clienti in base a una politica FIFO,
+il tempo di servizio è dato da:
+\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+    \item una componente costante, specifica per ogni cassiere
+    \item una componente variabile, linearmente dipendente dal numero di acquisti
+\end{itemize}
+
+
+\section{Scelte architetturali}
+L'architettura del sistema si basa sul modello client-server. \\
+Sia il client che il server saranno sviluppati in C. Il server gestisce il
+funzionamento del supermercato e delle casse, mentre i client simulano il 
+comportamento dei clienti: entrano, fanno acquisti e una volta effettuato il 
+pagamento, escono dal supermercato. \\
+La gestione del supermercato sarà implementata tramite l'uso di thread multipli
+per garantire una simulazione fluida e ottimizzata delle operazioni.
+Prevediamo l'utilizzo di:
+\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+    \item Un thread per la supervisione del supermercato.
+    \item Un thread per ogni cassa.
+    \item Un thread per ogni cliente all'interno del supermercato.
+\end{itemize}
+
+La scelta di utilizzare thread invece di processi è stata presa per evitare di
+gravare eccessivamente sul sistema, minimizzando l'uso delle risorse e garantendo
+migliori prestazioni. \\
+L'accesso esclusivo al supermercato e alle casse è garantito dall'utilizzo di 
+mutex, che assicurano la sincronizzazione tra i thread, evitando situazioni di
+conflitto.
+\section{Funzionalità}
+
+\section{Cronologia lavoro}
+
+\begin{center}
+    \begin{tabular}{lll}
+        \hline
+        \textbf{Data} & \textbf{Autore/i} & \textbf{Descrizione} \\
+        \hline
+        12/11/2024 & Simone Parente Martone & Adattamento della prima versione \\
+        \hline
+    \end{tabular}
+    \end{center}
+    
+
+\end{document}
