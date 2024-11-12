@@ -15,5 +15,5 @@ RUN gcc -pthread server.o supermercato.o cassa.o cliente.o -o server
 
 EXPOSE 10000
 
-CMD ["./server", "10000", "locahost", "5"]
+CMD ["./server", "10000", "localhost", "5"]
 
