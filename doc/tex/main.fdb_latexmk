@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1731423003.00936 "d:/Universita/GitHub/SupermarketSimulation/doc/tex/main.tex" "main.pdf" "main" 1731423003.75683 0
+["pdflatex"] 1731437314.17244 "d:/Universita/GitHub/SupermarketSimulation/doc/tex/main.tex" "main.pdf" "main" 1731437315.1078 0
   "C:/Users/Simone/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1731422131 80909 eab91d9745dd2edfd62a31d53cd5fe15 ""
   "C:/Users/Simone/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm1200.pk" 1731420459 14064 25208cfe1545e6b4aa00c55de7de4c53 ""
   "C:/Users/Simone/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1731413511 11987390 e3be06acca32909589ca8229a88a9002 ""
@@ -44,9 +44,9 @@
   "C:/Users/Simone/AppData/Local/Programs/MiKTeX/tex/latex/graphics/trig.sty" 1730544106 4023 2c9f39712cf7b43d3eb93a8bbd5c8f67 ""
   "C:/Users/Simone/AppData/Local/Programs/MiKTeX/tex/latex/l3backend/l3backend-pdftex.def" 1716476899 29785 9f93ab201fe5dd053afcc6c1bcf7d266 ""
   "Images/logo-federico-II.pdf" 1731419200 133374 49d25d1953b4d39549634b522c1059d6 ""
-  "d:/Universita/GitHub/SupermarketSimulation/doc/tex/main.tex" 1731423001 4270 40d5f7c9c344372eb7925ad08e9f5fb1 ""
-  "main.aux" 1731423003 675 f47771bb2ce5944dc1bf2e8c474bc294 "pdflatex"
-  "main.tex" 1731423001 4270 40d5f7c9c344372eb7925ad08e9f5fb1 ""
+  "d:/Universita/GitHub/SupermarketSimulation/doc/tex/main.tex" 1731437313 5824 5c1bfcb4c109ef0a0dd94011b5d097de ""
+  "main.aux" 1731437314 888 ccec6eaa2f6ec679756341b6ebc225c4 "pdflatex"
+  "main.tex" 1731437313 5824 5c1bfcb4c109ef0a0dd94011b5d097de ""
   (generated)
   "main.aux"
   "main.log"
