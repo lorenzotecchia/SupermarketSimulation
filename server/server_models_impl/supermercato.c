@@ -87,10 +87,7 @@ void* supervisiona_supermercato(void *arg) {
 
     Supermercato *supermercato = (Supermercato *)arg;
     //stampa la lista di attesa con gli id dei clienti
-    printf(COLOR_GREEN "Lista attesa finale: " COLOR_RESET);
-    for (int i = 0; i < supermercato->clienti_fuori; i++) {
-        printf("%d ", supermercato->lista_attesa[i]->id);
-    }
+    printf(COLOR_GREEN "Lista attesa finale di %d Clienti" COLOR_RESET, supermercato->clienti_fuori);
     printf("\n");
 
     while (1) {
@@ -103,9 +100,12 @@ void* supervisiona_supermercato(void *arg) {
             if(clienti_ammessi){
             printf(COLOR_BLUE "Ammessi %d nuovi clienti. Clienti attualmente presenti: %d.\n" COLOR_RESET, clienti_ammessi, supermercato->clienti_presenti);
             }
+            else if (!clienti_ammessi) {
+                printf(COLOR_RED "Non ci sono clienti da ammettere o limite massimo raggiunto.\n" COLOR_RESET);
+                exit(0);
+            }
         } else {
-            printf(COLOR_RED "Non ci sono clienti da ammettere o limite massimo raggiunto.\n" COLOR_RESET);
-            break;
+            printf(COLOR_YELLOW "Non ci sono spazi disponibili per nuovi clienti. Clienti attualmente presenti: %d.\n" COLOR_RESET, supermercato->clienti_presenti);
         }
 
         // Sblocca il mutex del supermercato
@@ -119,6 +119,9 @@ void* supervisiona_supermercato(void *arg) {
 
 // Controlla se possiamo ammettere nuovi clienti
 int possiamo_ammettere_clienti(Supermercato *supermercato) {
+    if (supermercato->clienti_fuori == 0) {
+        return 0;
+    }
     return supermercato->clienti_presenti <= supermercato->max_clienti;
 }
 
@@ -148,6 +151,7 @@ int ammetti_clienti(Supermercato *supermercato) {
 
     // Sposta avanti i clienti rimanenti nella lista di attesa
     sposta_clienti_avanti(supermercato, clienti_ammessi);
+
     printf("Il numero di clienti ammessi è : %d\n", clienti_ammessi);
     return clienti_ammessi;
 }
