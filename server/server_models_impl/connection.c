@@ -1,5 +1,6 @@
 #include "../server_include/server_models.h"
 
+
 // Configura il server socket per ascoltare le connessioni in entrata
 void setup_server_socket(int server_port, int *socket_fd) {
     struct sockaddr_in server_address;
@@ -35,14 +36,14 @@ void accept_connections(int socket_fd, Supermercato *supermercato) {
     while (1) {
         pthread_arg = (pthread_arg_t *)malloc(sizeof(pthread_arg_t));
         if (!pthread_arg) {
-            perror("malloc");
+            perror("Allocazione fallita per pthread_arg_t");
             continue;
         }
-    
+
         client_address_len = sizeof(pthread_arg->client_address);
         new_socket_fd = accept(socket_fd, (struct sockaddr *)&pthread_arg->client_address, &client_address_len);
         if (new_socket_fd == -1) {
-            perror("accept");
+            perror("Errore di accept");
             free(pthread_arg);
             continue;
         }
@@ -51,10 +52,12 @@ void accept_connections(int socket_fd, Supermercato *supermercato) {
         pthread_arg->supermercato = supermercato;
 
         if (pthread_create(&client_thread, NULL, client_handler, (void *)pthread_arg) != 0) {
-            perror("pthread_create");
+            perror("Errore creazione thread per client");
             free(pthread_arg);
+            close(new_socket_fd);
             continue;
         }
+        pthread_detach(client_thread); // Imposta il thread come "detach" per evitare memory leak
     }
 }
 
@@ -64,6 +67,9 @@ void *client_handler(void *arg) {
     int new_socket_fd = pthread_arg->new_socket_fd;
     Supermercato *supermercato = pthread_arg->supermercato;
     free(arg);
+
+    //detached thread
+    pthread_detach(pthread_self());
 
     char buffer[BUFFER_SIZE] = {0};
 
@@ -120,6 +126,7 @@ void *client_handler(void *arg) {
     }
 
     close(new_socket_fd);
+    pthread_exit(NULL);
     return NULL;
 }
 

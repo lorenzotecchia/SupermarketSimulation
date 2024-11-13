@@ -7,6 +7,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include "gui.h"
+#include "time.h"
 
 // Per il client
 void print_welcome_message();
