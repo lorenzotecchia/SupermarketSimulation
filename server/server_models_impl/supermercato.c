@@ -102,10 +102,11 @@ void* supervisiona_supermercato(void *arg) {
             }
             else if (!clienti_ammessi) {
                 printf(COLOR_RED "Non ci sono clienti da ammettere o limite massimo raggiunto.\n" COLOR_RESET);
-                exit(0);
+                break;
             }
         } else {
-            printf(COLOR_YELLOW "Non ci sono spazi disponibili per nuovi clienti. Clienti attualmente presenti: %d.\n" COLOR_RESET, supermercato->clienti_presenti);
+            printf(COLOR_RED "Non ci sono spazi disponibili per nuovi clienti. Clienti attualmente presenti: %d.\n" COLOR_RESET, supermercato->clienti_presenti);
+            break;
         }
 
         // Sblocca il mutex del supermercato
@@ -114,6 +115,7 @@ void* supervisiona_supermercato(void *arg) {
         sleep(10);  // Attende 10 secondi prima di ricontrollare
     }
 
+    exit(0);
     return NULL;
 }
 
