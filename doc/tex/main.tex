@@ -108,41 +108,10 @@ Prevediamo l'utilizzo di:
 La scelta di utilizzare thread invece di processi è stata presa per evitare di
 gravare eccessivamente sul sistema, minimizzando l'uso delle risorse e garantendo
 migliori prestazioni. \\
-L'accesso esclusivo al supermercato e alle casse sarà garantito dall'utilizzo di 
-mutex, che assicureranno la sincronizzazione tra i thread, evitando race conditions
-e conflitti. \\
-La scelta della cassa non è svolta autonomamente dal cliente, bensì dal supermercato:
-se la cassa è vuota, il cliente viene assegnato a questa cassa, altrimenti viene
-assegnato alla cassa con meno clienti in coda.
-
-\section{Componenti della simulazione}
-
-\subsection{Clienti}
-I clienti vengono creati e ammessi al supermercato fino ad un numero prestabilito
-passato come parametro in fase di esecuzione, i clienti che proveranno ad accedere
-successivamente saranno messi in una lista d'attesa. \\
-Ogni cliente ha il seguente workflow:
-
-\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
-    \item \textbf{Fase di acquisto}: i clienti passano un tempo generato casualmente
-    tra 1 e 10 secondi in questa fase, scegliendo un numero di articoli compreso
-    tra 0 e 19.
-    \item \textbf{Coda alle casse}: il cliente rimane in attesa.
-    \item \textbf{Pagamento}: il cliente viene servito e attende un tempo
-    variabile.
-    \item \textbf{Uscita dal supermercato}: ultimato il pagamento, il cliente esce dal
-    supermercato, chiudendo la connessione al server.
-
-\end{itemize}
-
-
-\subsection{Casse}
-Il numero di casse è definito all'avvio del server, ogni cassa opera in 
-maniera indipendente, con una propria coda e parametri casuali.
-Il tempo di servizio è calcolato tramite un tempo fisso sommato al prodotto tra
-un modificatore casuale e il numero di oggetti del cliente.
-Una volta terminato il servizio di un cliente, la cassa passa a servire il cliente successivo
-se la coda è vuota, la cassa rimane inattiva ed in attesa di altri clienti.
+L'accesso esclusivo al supermercato e alle casse è garantito dall'utilizzo di 
+mutex, che assicurano la sincronizzazione tra i thread, evitando situazioni di
+conflitto.
+\section{Funzionalità}
 
 \section{Cronologia lavoro}
 
