@@ -171,7 +171,7 @@ void sposta_clienti_avanti(Supermercato *supermercato, int clienti_da_ammettere)
 // Funzione per stampare il messaggio di benvenuto
 void print_welcome_message(int num_casse, int server_port) {
     // Stampa un'intestazione colorata e formattata
-    system("clear");
+    //system("clear");
     printf(CYAN_COLOR);
     printf("========================================\n");
     printf("   WELCOME TO THE SUPERMARKET SYSTEM   \n");

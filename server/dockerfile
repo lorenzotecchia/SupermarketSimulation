@@ -8,10 +8,11 @@ RUN apk update && \
 COPY . /app/
 
 RUN gcc -c -pthread server.c -o server.o
-RUN gcc -c -pthread models_impl/supermercato.c -o supermercato.o
-RUN gcc -c -pthread models_impl/cassa.c -o cassa.o
-RUN gcc -c -pthread models_impl/cliente.c -o cliente.o
-RUN gcc -pthread server.o supermercato.o cassa.o cliente.o -o server
+RUN gcc -c -pthread server_models_impl/supermercato.c -o supermercato.o
+RUN gcc -c -pthread server_models_impl/cassa.c -o cassa.o
+RUN gcc -c -pthread server_models_impl/cliente.c -o cliente.o
+RUN gcc -c -pthread server_models_impl/connection.c -o connection.o
+RUN gcc -pthread server.o supermercato.o cassa.o cliente.o connection.o -o server
 
 EXPOSE 10000
 
