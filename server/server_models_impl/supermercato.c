@@ -69,7 +69,6 @@ int trova_cassa_minima(Supermercato *supermercato) {
             num_min_clienti = num_clienti_in_coda[i];
             cassa_min_clienti = i;
             if(num_min_clienti==0){
-                printf(COLOR_MAGENTA "La cassa è vuota, la assegno\n" COLOR_RESET);
                 break;
             }
             printf(COLOR_BLUE "Nuova cassa minima scelta: %d con %d clienti\n" COLOR_RESET, i, num_clienti_in_coda[i]);
@@ -145,11 +144,9 @@ int ammetti_clienti(Supermercato *supermercato) {
 
         // Rimuove il cliente dalla lista di attesa
         supermercato->lista_attesa[i] = NULL;
-        printf("Rimuovo il cliente %d dalla lista di attesa.\n", cliente->id);
     }
 
-    // Sposta avanti i clienti rimasti in attesa per mantenere l'ordine FIFO
-    printf("Sposto avanti i clienti rimasti in attesa.\n");
+    // Sposta avanti i clienti rimanenti nella lista di attesa
     sposta_clienti_avanti(supermercato, clienti_ammessi);
     printf("Il numero di clienti ammessi è : %d\n", clienti_ammessi);
     return clienti_ammessi;
@@ -169,6 +166,30 @@ void sposta_clienti_avanti(Supermercato *supermercato, int clienti_da_ammettere)
     while (j < MAX_CLIENTS) {
         supermercato->lista_attesa[j++] = NULL;
     }
+}
+
+// Funzione per stampare il messaggio di benvenuto
+void print_welcome_message(int num_casse, int server_port) {
+    // Stampa un'intestazione colorata e formattata
+    system("clear");
+    printf(CYAN_COLOR);
+    printf("========================================\n");
+    printf("   WELCOME TO THE SUPERMARKET SYSTEM   \n");
+    printf("========================================\n");
+    printf(RESET_COLOR);
+
+    // Dettagli sulle casse e la porta
+    printf(BLUE_COLOR);
+    printf("🚨 Number of checkout counters in action: %d\n", num_casse);
+    printf("💻 The server is listening on port: %d\n", server_port);
+    printf(RESET_COLOR);
+
+    // Messaggio finale
+    printf(GREEN_COLOR);
+    printf("========================================\n");
+    printf("           Have a great shopping!       \n");
+    printf("========================================\n\n");
+    printf(RESET_COLOR);
 }
 //__________________________________________________________________________________________________//
 //__________________________________________________________________________________________________//

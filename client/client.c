@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
       //printf("Numero di oggetti [%d]\n", num_items);
       
       if (request_entry_to_supermarket(socket_fd, time_to_shop, num_items) == 0) {
-        shop_for_items(time_to_shop);
+        shop_for_items(time_to_shop*num_items);
 
         if (num_items > 0) {
           request_queue_to_checkout(socket_fd);
@@ -44,6 +44,7 @@ int main(int argc, char *argv[]) {
 }
 
 void generate_client_params(int *time_to_shop, int *num_items) {
+    srand(time(NULL) + getpid());
     *time_to_shop = (rand() % 10) + 1; // Valori tra 1 e 10 secondi
     *num_items = rand() % 20;          // Numero di oggetti tra 0 e 19
     
@@ -70,7 +71,7 @@ int request_entry_to_supermarket(int socket_fd, int time_to_shop, int num_items)
     // Riceve la risposta del server
     receive_message_from_server(socket_fd, buffer);
     if (strcmp(buffer, "ENTRY_ACCEPTED") == 0) {
-        printf("Richiesta di entrare accettata\n");
+        printf("Richiesta di entrare accettata per il cliente. \n");
         return 0;
     } else {
         printf("Entry denied: %s\n", buffer);
@@ -81,6 +82,7 @@ int request_entry_to_supermarket(int socket_fd, int time_to_shop, int num_items)
 
 void shop_for_items(int time_to_shop) {
   printf("Il cliente impiegherà [%d] secondi per fare acquisti\n", time_to_shop);
+  printf("--------------------------------------------------------\n");
   sleep(time_to_shop);  // Simula il tempo speso a fare acquisti
 }
 

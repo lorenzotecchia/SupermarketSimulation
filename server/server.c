@@ -1,5 +1,8 @@
 #include "server_include/server_models.h"
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
 
 int main(int argc, char *argv[]) {
     int server_port = 0;
@@ -15,12 +18,15 @@ int main(int argc, char *argv[]) {
     }
 
     int num_casse = (argc > 2) ? atoi(argv[3]) : 0;
-    if (num_casse <= 0 && num_casse > MAX_CASHIERS) {
+    if (num_casse <= 0 || num_casse > MAX_CASHIERS) {
         printf("Enter number of checkout counters: ");
         scanf("%d", &num_casse);
     }
 
-    // Inizializza il supermercato con le casse e i parametri
+    // Stampa del messaggio di benvenuto
+    print_welcome_message(num_casse, server_port);
+    
+    // Inizializza il supermercato con le casse e i parametri   
     inizializza_supermercato(&supermercato, num_casse, MAX_CLIENTS);
 
     // Crea un thread per supervisionare il supermercato
@@ -54,4 +60,3 @@ int main(int argc, char *argv[]) {
     close(socket_fd);
     return 0;
 }
-
