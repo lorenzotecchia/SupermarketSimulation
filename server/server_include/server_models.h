@@ -10,6 +10,12 @@
 #include <signal.h>
 #include <stdatomic.h>
 
+// Definizione colori per il terminale
+#define RESET_COLOR    "\x1b[0m"
+#define GREEN_COLOR    "\x1b[32m"
+#define BLUE_COLOR     "\x1b[34m"
+#define CYAN_COLOR     "\x1b[36m"
+
 #define BUFFER_SIZE 1024
 #define MAX_CLIENTS 100
 #define MAX_CASHIERS 20
@@ -67,7 +73,7 @@ void* supervisiona_supermercato(void *arg);
 int possiamo_ammettere_clienti(Supermercato *supermercato);
 int ammetti_clienti(Supermercato *supermercato);
 void sposta_clienti_avanti(Supermercato *supermercato, int clienti_da_ammettere);
-
+void print_welcome_message(int num_casse, int server_port);
 
 // Funzioni di connessione al client
 void setup_server_socket(int server_port, int *socket_fd);

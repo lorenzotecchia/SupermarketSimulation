@@ -14,7 +14,6 @@ void print_welcome_message() {
     printf("|       🥦 🍞 🍎 🧀 🍪 🥛   I reparti sono aperti!      |\n");
     printf("|    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    |\n");
     printf("|                                                       |\n");
-    printf("|        Premi un tasto per iniziare la tua avventura!  |\n");
     printf("|                                                       |\n");
     printf("+-------------------------------------------------------+\n");
     printf("\033[0m");  // Reset colore
