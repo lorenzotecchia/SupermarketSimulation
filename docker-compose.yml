@@ -21,4 +21,4 @@ services:
       - server
     stdin_open: true  # Mantieni l'input aperto per l'interazione
     tty: true         # Mantieni il terminale attivo
-    command: ["./client", "server", "10000", "1"]  # Usa il nome del servizio del server come host
+    command: ["./client", "server", "10000", "20"]  # Usa il nome del servizio del server come host

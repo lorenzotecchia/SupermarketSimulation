@@ -57,7 +57,6 @@ void accept_connections(int socket_fd, Supermercato *supermercato) {
             close(new_socket_fd);
             continue;
         }
-        pthread_detach(client_thread); // Imposta il thread come "detach" per evitare memory leak
     }
 }
 
