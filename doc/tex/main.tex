@@ -66,7 +66,7 @@
 \newpage
 
 \section{Introduzione}
-Questo documento presenta un progetto sviluppato per l'esame di Laboratorio di 
+Questo è un documento di presentazione per un progetto sviluppato per l'esame di Laboratorio di 
 Sistemi Operativi, A.A 2023/2024, tenuto dalla Prof. Rossi Alessandra.  \\
 Il progetto consiste nella simulazione di un supermercato, modellando le 
 interazioni tra quest'ultimo, i clienti e le casse in un contesto multi-threaded. 
@@ -108,9 +108,51 @@ Prevediamo l'utilizzo di:
 La scelta di utilizzare thread invece di processi è stata presa per evitare di
 gravare eccessivamente sul sistema, minimizzando l'uso delle risorse e garantendo
 migliori prestazioni. \\
-L'accesso esclusivo al supermercato e alle casse è garantito dall'utilizzo di 
-mutex, che assicurano la sincronizzazione tra i thread, evitando situazioni di
-conflitto.
+L'accesso esclusivo al supermercato e alle casse sarà garantito dall'utilizzo di 
+mutex, che assicureranno la sincronizzazione tra i thread, evitando race conditions
+e conflitti. \\
+La scelta della cassa non è svolta autonomamente dal cliente, bensì dal supermercato:
+se la cassa è vuota, il cliente viene assegnato a questa cassa, altrimenti viene
+assegnato alla cassa con meno clienti in coda.
+
+\section{Componenti della simulazione}
+
+\subsection{Clienti}
+I clienti vengono creati e ammessi al supermercato fino ad un numero prestabilito
+passato come parametro in fase di esecuzione, i clienti che proveranno ad accedere
+successivamente saranno messi in una lista d'attesa. \\
+Ogni cliente ha il seguente workflow:
+
+\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+    \item \textbf{Fase di acquisto}: i clienti passano un tempo generato casualmente
+    tra 0 e 190 secondi in questa fase, scegliendo un numero di articoli compreso
+    tra 0 e 19.
+    \item \textbf{Coda alle casse}: il cliente rimane in attesa.
+    \item \textbf{Pagamento}: il cliente viene servito e attende un tempo
+    variabile.
+    \item \textbf{Uscita dal supermercato}: ultimato il pagamento, il cliente esce dal
+    supermercato, chiudendo la connessione.
+
+\end{itemize}
+
+
+\subsection{Casse}
+Il numero di casse è definito all'avvio del server, ogni cassa opera in 
+maniera indipendente, con una propria coda e parametri generati casualmente.
+Il tempo totale di servizio è calcolato tramite un tempo fisso sommato al prodotto tra
+un modificatore casuale e il numero di oggetti del cliente.
+Una volta terminato il servizio di un cliente, la cassa serve il cliente successivo,
+in caso la coda fosse vuota la cassa rimarrebbe inattiva ed in attesa di altri clienti.
+
+\newpage
+
+\subsection{Supermercato}
+Il supermercato viene inizializzato all'avvio del server, il numero di casse e di clienti
+che possono trovarsi all'interno simultaneamente sono valori dati in fase di esecuzione.
+È dotato di una coda esterna, in cui i clienti attendono che il numero di clienti all'interno
+scenda sotto una certa soglia prima di poter entrare.
+Il supermercato si occupa di gestire la scelta della cassa a cui assegnare il clientee  lo shift
+dei clienti in avanti a quella determinata cassa.
 \section{Funzionalità}
 
 \section{Cronologia lavoro}
