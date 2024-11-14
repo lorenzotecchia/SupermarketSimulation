@@ -31,7 +31,7 @@ void *servi_cliente(void *arg) {
         // Sblocca il mutex per permettere ad altri di aggiungere clienti alla coda
         pthread_mutex_unlock(&cassa->mutex_cassa);
 
-        // Calcola il tempo di servizio per il cliente
+        // Calcola il tempo di servizio per il cliente dove la rand è il numero associato al cassiere
         int tempo_servizio = cassa->tempo_fisso + cliente->numero_di_oggetti * rand() % 3 + 1;
         printf("Cassa %d sta servendo il cliente %d per %d secondi [...] \n", cassa->id, cliente->id, tempo_servizio);
 
