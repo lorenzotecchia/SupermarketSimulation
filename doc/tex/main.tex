@@ -5,6 +5,21 @@
 \usepackage{fancyhdr}
 \usepackage{listings, xcolor}
 \usepackage{enumitem}
+\usepackage{aeguill}
+\usepackage{tikz}
+\usepackage{environ}
+\makeatletter
+\newsavebox{\measure@tikzpicture}
+\NewEnviron{scaletikzpicturetowidth}[1]{%
+  \def\tikz@width{#1}%
+  \def\tikzscale{1}\begin{lrbox}{\measure@tikzpicture}%
+  \BODY
+  \end{lrbox}%
+  \pgfmathparse{#1/\wd\measure@tikzpicture}%
+  \edef\tikzscale{\pgfmathresult}%
+  \BODY
+}
+\makeatother
 \setitemize{noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt}
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
@@ -18,6 +33,11 @@
 \renewcommand{\footrulewidth}{0.5pt}
 
 \begin{document}
+
+\definecolor{plantucolor0000}{RGB}{34,34,34}
+\definecolor{plantucolor0001}{RGB}{241,241,241}
+\definecolor{plantucolor0002}{RGB}{24,24,24}
+\definecolor{plantucolor0003}{RGB}{0,0,0}
 
 \begin{titlepage}
 
@@ -227,6 +247,17 @@ Vengono qui riportate tre delle funzioni principali della simulazione del Superm
     showtabs=false,                  
     tabsize=2,
 ]{./Programmi/client_handler.c}
+
+\newpage
+
+\subsection{Activity Diagram per la funzione client\_handler}
+\begin{figure}[h!]
+\centering
+\includegraphics[width=70mm,scale=0.5]{Images/client_handler.png}
+\caption{Activity Diagram di client\_handler}
+\label{fig:activity-diagram}
+\end{figure}
+\end{document}
 
 \section{Cronologia lavoro}
 \begin{center}

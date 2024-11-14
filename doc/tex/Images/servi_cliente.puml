@@ -1,0 +1,30 @@
+@startuml
+start
+:Inizializza Servizio Cassa;
+
+repeat
+  :Blocca Mutex Cassa;
+  if (Coda è Vuota?) then (sì)
+    :Aspetta Clienti;
+  endif
+  :Prendi Primo Cliente in Coda;
+  :Sposta Clienti Rimasti Avanti;
+  :Sblocca Mutex Cassa;
+
+  :Calcola Tempo di Servizio;
+  :Stampa Inizio Servizio;
+  :Simula Servizio con Sleep;
+
+  :Blocca Mutex Cassa;
+  :Aggiorna Tempo Totale di Servizio;
+  :Sblocca Mutex Cassa;
+
+  :Stampa Completamento Servizio;
+  :Blocca Mutex Supermercato;
+  :Aggiorna Conto Clienti;
+  :Stampa Uscita Cliente;
+  :Sblocca Mutex Supermercato;
+repeat while (vero)
+
+stop
+@enduml
