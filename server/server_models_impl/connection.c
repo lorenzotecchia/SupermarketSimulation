@@ -79,7 +79,7 @@ void *client_handler(void *arg) {
         Cliente cliente;
         cliente.id = new_socket_fd; // utilizzo dell'ID socket per rappresentare univocamente il cliente
         switch (command[0]) {
-            case 'E': // ENTRY_REQUEST --> richiesta di entrata al supermercato, viene aggiunto nella lista di attesa fuori il supermercato.
+            case 'E':
                 if (strncmp(buffer, "ENTRY_REQUEST", 13) == 0) {
                     int time_to_shop = 0, num_items = 0;
                     if (sscanf(buffer + 14, "%d %d", &time_to_shop, &num_items) != 2) {
@@ -98,25 +98,18 @@ void *client_handler(void *arg) {
                     }
                     pthread_mutex_unlock(&supermercato->mutex_supermercato);
                 }
-                break;
             case 'Q':
-                if (strncmp(buffer, "QUEUE_REQUEST", 13) == 0) {
-                    // TODO: Verifica che, il cliente entrato nel supermercato
-                    // TODO: Invia: il tempo totale di attesa
-                }
             break;
             case 'P':
                 if (strncmp(buffer, "PAYMENT_REQUEST", 15) == 0) {
-                    //TODO: Verificare che è il primo della coda della cassa in cui si trova
-                    //TODO: Invia: lo stato di pagamento (0, 1)
+                    printf(CYAN_COLOR "Il cliente %d ha effettuato il pagamento\n" RESET_COLOR, cliente.id);
                 }
-            break;
+                break;
             case 'N':
                 if (strncmp(buffer, "NO_ITEMS_EXIT_REQUEST", 21) == 0) {
-                    //TODO: Verifica che il numero di oggetti del cliente è 0
+                    printf(RESET_COLOR "Il cliente %d ha deciso di uscire senza acquistare nulla\n" RESET_COLOR, cliente.id);
                 }
-            break;
-
+                break;
             default:
                 printf("Comando non riconosciuto: %s\n", buffer);
                 break;
