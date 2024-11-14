@@ -1,4 +1,5 @@
 #include "client_include/client_models.h"
+#include <stdlib.h>
 #define SERVER_NAME_LEN_MAX 255
 #define BUFFER_SIZE 1024
 
@@ -16,21 +17,20 @@ int main(int argc, char *argv[]) {
       int time_to_shop, num_items;
       generate_client_params(&time_to_shop, &num_items);
 
-      //printf("Cliente generato\n");
-      //printf("Tempo per gli acquisti [%d]\n", time_to_shop);
-      //printf("Numero di oggetti [%d]\n", num_items);
-      
+      //TODO: print_shopping_message();
       if (request_entry_to_supermarket(socket_fd, time_to_shop, num_items) == 0) {
         shop_for_items(time_to_shop*num_items);
-
         if (num_items > 0) {
           request_queue_to_checkout(socket_fd);
           wait_in_queue_and_pay(socket_fd, num_items);
         } else {
           handle_no_items_exit(socket_fd);
+
         }
+        //TODO: print_waiting_in_queue_message(num_items);
       }
 
+      print_closing_message();
       close(socket_fd);
       exit(0);
     }
@@ -39,8 +39,7 @@ int main(int argc, char *argv[]) {
   for (int i = 0; i < num_clients; i++) {
     wait(NULL);
   }
-  print_shopping_message();
-  return 0;
+  exit(0);
 }
 
 void generate_client_params(int *time_to_shop, int *num_items) {

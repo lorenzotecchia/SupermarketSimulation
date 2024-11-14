@@ -16,5 +16,5 @@
 
 void print_welcome_message();
 void print_shopping_message();
-void print_waiting_in_queue_message();
+void print_waiting_in_queue_message(int num_articoli);
 void print_closing_message();
