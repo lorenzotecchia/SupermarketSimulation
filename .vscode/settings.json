@@ -1,6 +1,0 @@
-{
-    "files.associations": {
-        "*.txt": "alex",
-        "server_models.h": "c"
-    }
-}
