@@ -15,6 +15,6 @@
 #define RESET "\033[0m"
 
 void print_welcome_message();
-void print_shopping_message(int client_id);
-void print_waiting_in_queue_message(int client_id);
+void print_shopping_message();
+void print_waiting_in_queue_message();
 void print_closing_message();

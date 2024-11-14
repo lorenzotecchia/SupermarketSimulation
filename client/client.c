@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
   for (int i = 0; i < num_clients; i++) {
     wait(NULL);
   }
-
+  print_shopping_message();
   return 0;
 }
 
