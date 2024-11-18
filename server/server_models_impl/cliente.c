@@ -5,7 +5,7 @@
 #include "../server_include/server_models.h"
 
 
-int scegli_oggetti(Cliente *cliente) {
+int choose_objects(Cliente *cliente) {
 
     printf("Cliente %d sta scegliendo gli acquisti per %d secondi. [...] \n", cliente->id, cliente->tempo_per_scegliere_oggetti);
     sleep(cliente->tempo_per_scegliere_oggetti);
@@ -16,7 +16,7 @@ int scegli_oggetti(Cliente *cliente) {
 }
 
 
-void metti_in_fila(Cassa *cassa, Cliente *cliente) {
+void queue_up(Cassa *cassa, Cliente *cliente) {
 
     pthread_mutex_lock(&cassa->mutex_cassa);
 

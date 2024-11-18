@@ -59,20 +59,20 @@ typedef struct pthread_arg_t {
 } pthread_arg_t;
 
 // Funzioni per il cliente
-int scegli_oggetti(Cliente *cliente);
-void metti_in_fila(Cassa * cassa, Cliente *cliente);
+int choose_objects(Cliente *cliente);
+void queue_up(Cassa * cassa, Cliente *cliente);
 
 // Funzioni per la cassa
-void *servi_cliente(void *arg);
+void *serve_clients(void *arg);
 
 // Funzioni per il supermercato
-void inizializza_supermercato(Supermercato *supermercato, int num_casse, int max_clienti);
-void scegli_cassa_per_cliente(Supermercato *supermercato, Cliente *cliente);
-int trova_cassa_minima(Supermercato *supermercato);
-void* supervisiona_supermercato(void *arg);
-int possiamo_ammettere_clienti(Supermercato *supermercato);
-int ammetti_clienti(Supermercato *supermercato);
-void sposta_clienti_avanti(Supermercato *supermercato, int clienti_da_ammettere);
+void initialize_supermarket(Supermercato *supermercato, int num_casse, int max_clienti);
+void choose_checkout_for_client(Supermercato *supermercato, Cliente *cliente);
+int find_minimum_checkout(Supermercato *supermercato);
+void* manage_supermarket(void *arg);
+int clients_to_be_admitted(Supermercato *supermercato);
+int admit_clients(Supermercato *supermercato);
+void move_clients_forward(Supermercato *supermercato, int clienti_da_ammettere);
 void print_welcome_message(int num_casse, int server_port);
 
 // Funzioni di connessione al client

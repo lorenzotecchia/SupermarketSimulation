@@ -25,13 +25,13 @@ int main(int argc, char *argv[]) {
 
     // Stampa del messaggio di benvenuto
     print_welcome_message(num_casse, server_port);
-    
+
     // Inizializza il supermercato con le casse e i parametri   
-    inizializza_supermercato(&supermercato, num_casse, MAX_CLIENTS);
+    initialize_supermarket(&supermercato, num_casse, MAX_CLIENTS);
 
     // Crea un thread per supervisionare il supermercato
     pthread_t supermarket_thread;
-    if (pthread_create(&supermarket_thread, NULL, supervisiona_supermercato, (void *)&supermercato) != 0) {
+    if (pthread_create(&supermarket_thread, NULL, manage_supermarket, (void *)&supermercato) != 0) {
         perror("pthread_create");
         exit(1);
     }
@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
         parametri->cassa = (void *)supermercato.casse[i];
         parametri->supermercato = (void *)&supermercato;
 
-        if (pthread_create(&cassa_thread, NULL, servi_cliente, (void *)parametri) != 0) {
+        if (pthread_create(&cassa_thread, NULL, serve_clients, (void *)parametri) != 0) {
             perror("pthread_create");
             exit(1);
         }

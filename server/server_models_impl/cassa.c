@@ -5,7 +5,7 @@
 #include <unistd.h>
 
 // Funzione per simulare il servizio di un cliente alla cassa
-void *servi_cliente(void *arg) {
+void *serve_clients(void *arg) {
     ParametriCassa *parametri = (ParametriCassa *)arg;
     Cassa *cassa = (Cassa *)parametri->cassa;
     Supermercato *supermercato = (Supermercato *)parametri->supermercato;

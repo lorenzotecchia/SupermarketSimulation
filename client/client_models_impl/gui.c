@@ -1,6 +1,7 @@
 #include "../client_include/gui.h"
 #include <stdlib.h>
 
+// Stampa del messaggio principale di benvenuto
 void print_welcome_message() {
     system("clear");
     printf("\033[1;36m");  // Colore ciano
@@ -19,8 +20,7 @@ void print_welcome_message() {
     printf("\033[0m");  // Reset colore
 }
 
-
-
+// Stampa del messaggio di avviso di acquisti in corso
 void print_shopping_message() {
   printf("\033[1;33m");  // Colore giallo
   printf("+-------------------------------------------------------+\n");
@@ -33,6 +33,8 @@ void print_shopping_message() {
   printf("\033[0m");  // Reset colore
 }
 
+
+// Stampa del messaggio di dell'immissione in coda
 void print_waiting_in_queue_message(int num_articoli) {
   printf("\033[1;35m");  // Colore magenta
   printf("+-------------------------------------------------------+\n");
@@ -45,6 +47,7 @@ void print_waiting_in_queue_message(int num_articoli) {
   printf("\033[0m");  // Reset colore
 }
 
+// Stampa messaggio di chiusura
 void print_closing_message()   {
   printf("\033[1;31m");  // Colore rosso
   printf("+-------------------------------------------------------+\n");

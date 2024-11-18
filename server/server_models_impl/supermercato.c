@@ -5,8 +5,7 @@
 #include <unistd.h>
 #include "../server_include/colors.h"
 
-//__________________________________________________________________________________________________//
-void inizializza_supermercato(Supermercato *supermercato, int num_casse, int max_clienti) {
+void initialize_supermarket(Supermercato *supermercato, int num_casse, int max_clienti) {
     supermercato->num_casse = num_casse;
     supermercato->max_clienti = max_clienti;
     supermercato->clienti_presenti = 0;
@@ -28,28 +27,27 @@ void inizializza_supermercato(Supermercato *supermercato, int num_casse, int max
         pthread_cond_init(&supermercato->casse[i]->coda_vuota, NULL);
     }
 }
-//__________________________________________________________________________________________________//
 
 
 // Funzione che sceglie la cassa con il minor numero di clienti e mette in fila il cliente
 void scegli_cassa_per_cliente(Supermercato *supermercato, Cliente *cliente) {
     // Simula il cliente che sceglie gli oggetti
-    scegli_oggetti(cliente);
+    choose_objects(cliente);
 
     // Trova la cassa con il minor numero di clienti
-    int cassa_min_index = trova_cassa_minima(supermercato);
+    int cassa_min_index = find_minimum_checkout(supermercato);
 
     // Se è stata trovata una cassa disponibile, mette in fila il cliente in quella cassa
     if (cassa_min_index != -1) {
         Cassa *cassa_scelta = supermercato->casse[cassa_min_index];
-        metti_in_fila(cassa_scelta, cliente);  // Usa metti_in_fila per inserire il cliente
+        queue_up(cassa_scelta, cliente);  // Usa metti_in_fila per inserire il cliente
         printf(COLOR_GREEN "Cliente %d assegnato alla cassa %d.\n" COLOR_RESET, cliente->id, cassa_scelta->id);
     } else {
         printf(COLOR_RED "Non ci sono casse disponibili per il cliente %d.\n" COLOR_RESET, cliente->id);
     }
 }
 
-int trova_cassa_minima(Supermercato *supermercato) {
+int find_minimum_checkout(Supermercato *supermercato) {
     int cassa_min_clienti = -1;
     int num_min_clienti = MAX_CLIENTS + 1;
     int num_clienti_in_coda[supermercato->num_casse];
@@ -78,11 +76,8 @@ int trova_cassa_minima(Supermercato *supermercato) {
     return cassa_min_clienti;
 }
 
-
-//__________________________________________________________________________________________________//
-
 // Funzione per supervisionare il supermercato e ammettere nuovi clienti
-void* supervisiona_supermercato(void *arg) {
+void* manage_supermarket(void *arg) {
     sleep(10);  // Attende 10 secondi prima di iniziare
 
     Supermercato *supermercato = (Supermercato *)arg;
@@ -95,8 +90,8 @@ void* supervisiona_supermercato(void *arg) {
         pthread_mutex_lock(&supermercato->mutex_supermercato);
 
         // Controlla se possiamo ammettere nuovi clienti
-        if (possiamo_ammettere_clienti(supermercato)) {
-            int clienti_ammessi = ammetti_clienti(supermercato);
+        if (clients_to_be_admitted(supermercato)) {
+            int clienti_ammessi = admit_clients(supermercato);
             if(clienti_ammessi){
             printf(COLOR_BLUE "Ammessi %d nuovi clienti. Clienti attualmente presenti: %d.\n" COLOR_RESET, clienti_ammessi, supermercato->clienti_presenti);
             }
@@ -120,7 +115,7 @@ void* supervisiona_supermercato(void *arg) {
 }
 
 // Controlla se possiamo ammettere nuovi clienti
-int possiamo_ammettere_clienti(Supermercato *supermercato) {
+int clients_to_be_admitted(Supermercato *supermercato) {
     if (supermercato->clienti_fuori == 0) {
         return 0;
     }
@@ -128,7 +123,7 @@ int possiamo_ammettere_clienti(Supermercato *supermercato) {
 }
 
 // Ammette i clienti dalla lista di attesa
-int ammetti_clienti(Supermercato *supermercato) {
+int admit_clients(Supermercato *supermercato) {
     int clienti_da_ammettere = supermercato->max_clienti - supermercato->clienti_presenti;
     int clienti_ammessi = 0;
 
@@ -152,14 +147,14 @@ int ammetti_clienti(Supermercato *supermercato) {
     }
 
     // Sposta avanti i clienti rimanenti nella lista di attesa
-    sposta_clienti_avanti(supermercato, clienti_ammessi);
+    move_clients_forward(supermercato, clienti_ammessi);
 
     printf("Il numero di clienti ammessi è : %d\n", clienti_ammessi);
     return clienti_ammessi;
 }
 
 // Sposta avanti i clienti rimanenti nella lista di attesa
-void sposta_clienti_avanti(Supermercato *supermercato, int clienti_da_ammettere) {
+void move_clients_forward(Supermercato *supermercato, int clienti_da_ammettere) {
     int j = 0; // nuovo indice per lista ordinata
 
     for (int i = 0; i < MAX_CLIENTS; i++) {
@@ -197,5 +192,3 @@ void print_welcome_message(int num_casse, int server_port) {
     printf("========================================\n\n");
     printf(RESET_COLOR);
 }
-//__________________________________________________________________________________________________//
-//__________________________________________________________________________________________________//

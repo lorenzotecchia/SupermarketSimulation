@@ -73,7 +73,7 @@ int request_entry_to_supermarket(int socket_fd, int time_to_shop, int num_items)
         printf("Richiesta di entrare accettata per il cliente. \n");
         return 0;
     } else {
-        printf("Entry denied: %s\n", buffer);
+        printf("Entrata negata: %s\n", buffer);
         return -1;
     }
 }
@@ -91,7 +91,7 @@ int request_queue_to_checkout(int socket_fd) {
   write(socket_fd, buffer, strlen(buffer));
 
   receive_message_from_server(socket_fd, buffer);
-  printf("Assigned to queue: %s\n", buffer);
+  printf("Richiesta di entrata: %s\n", buffer);
   return 0;
 }
 
@@ -101,7 +101,7 @@ void wait_in_queue_and_pay(int socket_fd, int num_items) {
   write(socket_fd, buffer, strlen(buffer));
 
   receive_message_from_server(socket_fd, buffer);
-  printf("Payment complete: %s\n", buffer);
+  printf("Pagamento completato: %s\n", buffer);
 }
 
 void handle_no_items_exit(int socket_fd) {

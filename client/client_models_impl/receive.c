@@ -14,6 +14,6 @@ void receive_message_from_server(int socket_fd, char *buffer) {
     exit(1);
   } else if (bytes_read == 0) {
   } else {
-    buffer[bytes_read] = '\0'; // Null-terminate to safely print as a string
+    buffer[bytes_read] = '\0'; //Termina con null per stampare in modo sicuro come una stringa
   }
 }
