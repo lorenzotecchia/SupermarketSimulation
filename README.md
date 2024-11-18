@@ -46,13 +46,12 @@ Il progetto è organizzato nella seguente struttura di directory e file:
 - **client/**: Contiene il codice sorgente e gli header per la simulazione dei clienti.
   - `client.c`: File principale che gestisce il ciclo di vita dei clienti.
   - `dockerfile`: File per creare l'immagine Docker del modulo client.
-  - `include_client/`: Contiene gli header per le funzionalità di gestione dei clienti.
-    - `client.h`: Definizioni principali del cliente.
-    - `connection.h`: Gestione delle connessioni client-server.
+  - `client_include/`: Contiene gli header per le funzionalità di gestione dei clienti.
+    - `client_models`: Definizioni principali del cliente.
     - `gui.h`: Funzionalità per l'interfaccia grafica.
-    - `receive.h` e `send.h`: Funzioni per la gestione della comunicazione client-server.
-  - `utility/`: Implementazioni delle funzioni definite negli header.
-    - `connection.c`, `gui.c`, `receive.c`, `send.c`: Funzionalità modulari del client.
+    - `receive.h`: Funzione per la gestione della comunicazione client-server.
+  - `client_models_impl/`: Implementazioni delle funzioni definite negli header.
+    - `connection.c`, `gui.c`, `receive.c`: Funzionalità modulari del client.
   - `makefile`: File di build per compilare il modulo client.
 
 - **doc/**: Contiene documentazione aggiuntiva.
@@ -65,11 +64,10 @@ Il progetto è organizzato nella seguente struttura di directory e file:
 - **server/**: Contiene il codice sorgente e gli header per il lato server del supermercato.
   - `server.c`: File principale che gestisce le operazioni del supermercato.
   - `dockerfile`: File per creare l'immagine Docker del modulo server.
-  - `include_server/`: Contiene gli header relativi alle strutture dati e al funzionamento del server.
+  - `server_include/`: Contiene gli header relativi alle strutture dati e al funzionamento del server.
     - `colors.h`: Header per la gestione dei colori nella console.
-    - `models.h`: Definizioni delle strutture dati per i clienti, casse e supermercato.
-    - `server.h`: Funzioni principali del server.
-  - `models_impl/`: Implementazioni delle funzionalità relative ai modelli.
+    - `server_models.h`: Definizioni delle strutture dati per i clienti, casse e supermercato.
+  - `server_models_impl/`: Implementazioni delle funzionalità relative ai modelli.
     - `cassa.c`, `cliente.c`, `supermercato.c`: Moduli che gestiscono le singole entità della simulazione.
   - `makefile`: File di build per compilare il modulo server.
 
