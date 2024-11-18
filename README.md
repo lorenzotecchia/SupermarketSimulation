@@ -12,39 +12,33 @@ Il progetto è organizzato nella seguente struttura di directory e file:
 ├── LICENSE
 ├── README.md
 ├── client
-│   ├── client.c
-│   ├── dockerfile
-│   ├── include_client
-│   │   ├── client.h
-│   │   ├── connection.h
-│   │   ├── gui.h
-│   │   ├── receive.h
-│   │   └── send.h
-│   ├── makefile
-│   └── utility
-│       ├── connection.c
-│       ├── gui.c
-│       ├── receive.c
-│       └── send.c
+│   ├── client.c
+│   ├── client_include
+│   │   ├── client_models.h
+│   │   └── gui.h
+│   ├── client_models_impl
+│   │   ├── connection.c
+│   │   ├── gui.c
+│   │   └── receive.c
+│   ├── dockerfile
+│   └── makefile
 ├── doc
-│   ├── istruzioni_docker_compose.md
-│   └── tracce_progetti.pdf
+│   ├── documentazione.pdf
+│   ├── istruzioni_docker_compose.md
+│   └── tracce_progetti.pdf
 ├── docker-compose.yml
 └── server
     ├── dockerfile
-    ├── include_server
-    │   ├── colors.h
-    │   ├── models.h
-    │   └── server.h
     ├── makefile
-    ├── models_impl
-    │   ├── cassa.c
-    │   ├── cliente.c
-    │   └── supermercato.c
-    └── server.c
-
-8 directories, 26 files
-
+    ├── server.c
+    ├── server_include
+    │   ├── colors.h
+    │   └── server_models.h
+    └── server_models_impl
+        ├── cassa.c
+        ├── cliente.c
+        ├── connection.c
+        └── supermercato.c
 ```
 
 ### Descrizione della Struttura
