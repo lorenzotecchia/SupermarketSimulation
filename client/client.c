@@ -17,7 +17,8 @@ int main(int argc, char *argv[]) {
       int time_to_shop, num_items;
       generate_client_params(&time_to_shop, &num_items);
 
-      //TODO: print_shopping_message();
+        // TODO: Da cancellare per un solo cliente
+       //print_shopping_message();
       if (request_entry_to_supermarket(socket_fd, time_to_shop, num_items) == 0) {
         shop_for_items(time_to_shop*num_items);
         if (num_items > 0) {
@@ -27,7 +28,8 @@ int main(int argc, char *argv[]) {
           handle_no_items_exit(socket_fd);
 
         }
-        //TODO: print_waiting_in_queue_message(num_items);
+        // TODO: Da cancellare per un solo cliente
+        // print_waiting_in_queue_message(num_items);
       }
 
       print_closing_message();
